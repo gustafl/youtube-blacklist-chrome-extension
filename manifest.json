@@ -3,7 +3,7 @@
 
 	"name": "BlackList for YouTube",
 	"description": "Adds blacklist functionality to YouTube website.",
-	"version": "0.1.0",
+	"version": "0.1.1",
 
 	"page_action": {
 		"default_icon": "icon.png",
@@ -18,14 +18,20 @@
 
 	"content_scripts": [
 		{
-			"matches": [ "https://www.youtube.com/watch?v=*" ],
+			"matches": [ "https://www.youtube.com/*", "http://www.aktietorget.se/*" ],
 			"js": [ "youtube.js" ],
 			"css": [ "youtube.css" ]
 		}
 	],
 
+	"options_ui": {
+    	"page": "options.html",
+    	"chrome_style": true
+  	},
+
 	"permissions" : [
 		"tabs",
-		"https://www.youtube.com/*"
+		"https://www.youtube.com/*",
+		"http://www.aktietorget.se/*"
 	]
 }

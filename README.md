@@ -1,3 +1,3 @@
-# BlackList for YouTube
+# Blacklist for YouTube
 
-A Google Chrome extension for blacklisting users on YouTube.
+A Google Chrome extension for blacklisting dumb people on YouTube.
