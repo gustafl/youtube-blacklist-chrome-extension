@@ -1,0 +1,31 @@
+{
+	"manifest_version": 2,
+
+	"name": "BlackList for YouTube",
+	"description": "Adds blacklist functionality to YouTube website.",
+	"version": "0.1.0",
+
+	"page_action": {
+		"default_icon": "icon.png",
+		"default_title": "BlackList for YouTube",
+		"default_popup": "popup.html"
+	},
+	
+	"background": {
+		"scripts" : [ "eventPage.js" ],
+		"persistent" : false
+	},
+
+	"content_scripts": [
+		{
+			"matches": [ "https://www.youtube.com/watch?v=*" ],
+			"js": [ "youtube.js" ],
+			"css": [ "youtube.css" ]
+		}
+	],
+
+	"permissions" : [
+		"tabs",
+		"https://www.youtube.com/*"
+	]
+}
