@@ -91,7 +91,6 @@ function addContextMenu() {
         var id = chrome.contextMenus.create({"title": title, "contexts":[context],"onclick": contextMenuListener});
     }
 
-    chrome.contextMenus.ACTION_MENU_TOP_LEVEL_LIMIT = 2;
     var blacklist = chrome.contextMenus.create({ title: 'Blacklist user' });
     var reason1 = chrome.contextMenus.create({ title: 'Nonsense', parentId: blacklist, onclick: contextMenuListener });
     var reason2 = chrome.contextMenus.create({ title: 'Insult', parentId: blacklist, onclick: contextMenuListener });
