@@ -47,6 +47,7 @@ function doStuff(tab) {
                 chrome.tabs.sendMessage(tab.id, { message: message });
             }
         });
+        addContextMenu();
     }
 }
 
@@ -65,3 +66,37 @@ chrome.runtime.onMessage.addListener(function (request, sender, response) {
             break;
     }
 });
+
+// A generic onclick callback function for the context menu
+function contextMenuListener(info, tab) {
+    
+    console.log(info);
+    console.log(tab);
+
+    // Add user to blacklist
+
+
+}
+
+/**
+ * Add a context menu.
+ */
+function addContextMenu() {
+    // If context menu exists, don't add it
+    // Create one test item for each context type.
+    var contexts = [ 'link', 'image' ];
+    for (var i = 0; i < contexts.length; i++) {
+        var context = contexts[i];
+        var title = "Test '" + context + "' menu item";
+        var id = chrome.contextMenus.create({"title": title, "contexts":[context],"onclick": contextMenuListener});
+    }
+
+    chrome.contextMenus.ACTION_MENU_TOP_LEVEL_LIMIT = 2;
+    var blacklist = chrome.contextMenus.create({ title: 'Blacklist user' });
+    var reason1 = chrome.contextMenus.create({ title: 'Nonsense', parentId: blacklist, onclick: contextMenuListener });
+    var reason2 = chrome.contextMenus.create({ title: 'Insult', parentId: blacklist, onclick: contextMenuListener });
+    var reason3 = chrome.contextMenus.create({ title: 'Stupid', parentId: blacklist, onclick: contextMenuListener });
+    var whitelist = chrome.contextMenus.create({ title: 'Whitelist user' });
+    var reason4 = chrome.contextMenus.create({ title: 'Useful', parentId: whitelist, onclick: contextMenuListener });
+    var reason5 = chrome.contextMenus.create({ title: 'Kind', parentId: whitelist, onclick: contextMenuListener });
+}
