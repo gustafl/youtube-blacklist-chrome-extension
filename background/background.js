@@ -24,6 +24,13 @@ chrome.tabs.onActivated.addListener(function (activeInfo) {
 });
 
 /**
+ * Get blacklisted users from storage.
+ */
+function getBlacklistedUsers(users) {
+    return users;
+}
+
+/**
  * Enables the toolbar button and requests an array of distinct users from the
  * content script.
  * @param {chrome.tabs.Tab} tab
@@ -33,7 +40,12 @@ function doStuff(tab) {
         chrome.pageAction.show(tab.id);
         var message = { name: 'getUsers' };
         chrome.tabs.sendMessage(tab.id, { message: message }, function (response) {
-            console.log(response);
+            if (response != null) {
+                var blacklisted = getBlacklistedUsers(response);
+                console.log(blacklisted);
+                var message = { name: 'filterUsers', data: blacklisted };
+                chrome.tabs.sendMessage(tab.id, { message: message });
+            }
         });
     }
 }
