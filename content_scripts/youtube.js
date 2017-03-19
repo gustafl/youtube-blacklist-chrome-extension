@@ -53,27 +53,29 @@ function getUsers() {
  */
 function filterComments(users) {
     for (var i = 0; i < users.length; i++) {
-        var element = currentValue.querySelector('a');
+        var user = users[i];
+        console.log(user);
+/*        var element = currentValue.querySelector('a');
         var userId = element.getAttribute('data-ytid');
         if (blacklistedUsers.indexOf(userId) > -1) {
             element.classList.add('blacklisted-user');
-        }
+        }*/
     }
 }
 
 /**
  * Listens for various messages. Each message object (request.message) has a
- * name and data property.
+ * name and body property.
  */
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     switch (request.message.name) {
         case 'getUsers':
             var users = getUsers();
-            var message = { name: 'getUsers', data: users };
+            var message = { name: 'getUsers', body: users };
             sendResponse({ message: message });
             break;
         case 'filterComments':
-            var users = request.message.data;
+            var users = request.message.body;
             filterComments(users);
             break;
         default:

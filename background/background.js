@@ -1,4 +1,6 @@
-var URL_PATTERN = '://www.youtube.com/watch?v=';
+var URL_PATTERN = '*://www.youtube.com/watch?v=*';
+
+var contextMenuAdded = false;
 
 /**
  * Fires when the frame's history was updated to a new URL. We use this instead
@@ -36,29 +38,43 @@ function getBlacklistedUsers(users) {
  * @param {chrome.tabs.Tab} tab
  */
 function doStuff(tab) {
-    if (tab.url.indexOf(URL_PATTERN) > -1) {
+    if (tab.url.indexOf(URL_PATTERN.replace(/\*/g, '')) > -1) {
         chrome.pageAction.show(tab.id);
         var message = { name: 'getUsers' };
         chrome.tabs.sendMessage(tab.id, { message: message }, function (response) {
-            if (response != null) {
+            if (response) {
                 var blacklisted = getBlacklistedUsers(response);
-                console.log(blacklisted);
-                var message = { name: 'filterUsers', data: blacklisted };
+                var message = { name: 'filterComments', body: blacklisted };
                 chrome.tabs.sendMessage(tab.id, { message: message });
             }
         });
-        addContextMenu();
+        addContextMenuItems();
+    }
+}
+
+function addContextMenuItems() {
+    if (!contextMenuAdded) {
+        var contextMenuItem = {
+            type: 'normal',
+            id: 'blacklistUser',
+            title: 'Blacklist user',
+            contexts: [ 'link', 'image' ],
+            documentUrlPatterns: [ URL_PATTERN ]
+        };
+        chrome.contextMenus.create(contextMenuItem, function () {
+            contextMenuAdded = true;
+        });
     }
 }
 
 /**
  * Listens for various messages. Each message object (request.message) has a
- * name and data property.
+ * name and body property.
  */
 chrome.runtime.onMessage.addListener(function (request, sender, response) {
     switch (request.message.name) {
         case 'getUsers':
-            var users = request.message.data;
+            var users = request.message.body;
             console.log(users);
             break;
         default:
@@ -67,35 +83,9 @@ chrome.runtime.onMessage.addListener(function (request, sender, response) {
     }
 });
 
-// A generic onclick callback function for the context menu
-function contextMenuListener(info, tab) {
-    
-    console.log(info);
-    console.log(tab);
-
-    // Add user to blacklist
-
-
-}
-
 /**
- * Add a context menu.
+ * Click listener for conext menu items.
  */
-function addContextMenu() {
-    // If context menu exists, don't add it
-    // Create one test item for each context type.
-    var contexts = [ 'link', 'image' ];
-    for (var i = 0; i < contexts.length; i++) {
-        var context = contexts[i];
-        var title = "Test '" + context + "' menu item";
-        var id = chrome.contextMenus.create({"title": title, "contexts":[context],"onclick": contextMenuListener});
-    }
-
-    var blacklist = chrome.contextMenus.create({ title: 'Blacklist user' });
-    var reason1 = chrome.contextMenus.create({ title: 'Nonsense', parentId: blacklist, onclick: contextMenuListener });
-    var reason2 = chrome.contextMenus.create({ title: 'Insult', parentId: blacklist, onclick: contextMenuListener });
-    var reason3 = chrome.contextMenus.create({ title: 'Stupid', parentId: blacklist, onclick: contextMenuListener });
-    var whitelist = chrome.contextMenus.create({ title: 'Whitelist user' });
-    var reason4 = chrome.contextMenus.create({ title: 'Useful', parentId: whitelist, onclick: contextMenuListener });
-    var reason5 = chrome.contextMenus.create({ title: 'Kind', parentId: whitelist, onclick: contextMenuListener });
-}
+chrome.contextMenus.onClicked.addListener(function (info, tab) {
+    console.log(info);
+});
