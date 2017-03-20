@@ -1,5 +1,8 @@
 'use strict';
 
+var COMMENT_SECTION = '#comment-section-renderer-items';
+var COMMENT = 'div.comment-renderer';
+
 /**
  * Available functions in the chrome.* API
  * =======================================
@@ -24,15 +27,17 @@ function getUsers() {
     var users = [];
 
     // Make sure we got a comment section
-    var commentRoot = document.querySelector('#comment-section-renderer-items');
+    var commentRoot = document.querySelector(COMMENT_SECTION);
     if (!commentRoot) {
-        return null;
+        console.warn('No comment section found.');
+        return [];
     }
 
     // Make sure we got some comments
-    var comments = commentRoot.querySelectorAll('div.comment-renderer');
+    var comments = commentRoot.querySelectorAll(COMMENT);
     if (!comments) {
-        return null;
+        console.warn('No comments found.');
+        return [];
     }
 
     // Loop through comments
@@ -65,17 +70,23 @@ function filterComments(users) {
 
 /**
  * Listens for various messages. Each message object (request.message) has a
- * name and body property.
+ * name and data property.
  */
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+    console.info('Content script received message named ' + request.message.name + '.');
     switch (request.message.name) {
+        case 'commentSectionIsLoaded':
+            var output = document.querySelector(COMMENT_SECTION) ? true : false;
+            var message = { name: 'commentSectionIsLoaded', data: output };
+            sendResponse({ message: message });
+            break;
         case 'getUsers':
             var users = getUsers();
-            var message = { name: 'getUsers', body: users };
+            var message = { name: 'getUsers', data: users };
             sendResponse({ message: message });
             break;
         case 'filterComments':
-            var users = request.message.body;
+            var users = request.message.data;
             filterComments(users);
             break;
         default:
