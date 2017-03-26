@@ -6,64 +6,6 @@ var contextMenuAdded = false;
 var commentSectionIsLoaded = false;
 var loadMoreButtonIsLoaded = false;
 
-var webRequestFilters = {
-    urls: [
-        '*://*.youtube.com/watch_fragments_ajax?*&frags=comments*',
-        '*://*.youtube.com/comment_service_ajax?action_get_comments=*'
-    ],
-    types: [
-        'xmlhttprequest'
-    ]
-};
-
-var webRequestOptions = [];
-
-/**
- * Fired when the page's DOM is fully constructed, but the referenced resources
- * may not finish loading.
- */
-chrome.webNavigation.onDOMContentLoaded.addListener(function (details) {
-    console.info('webNavigation.onDOMContentLoaded');
-    console.log(details);
-    doStuff(details);
-});
-
-/**
- * Fired when an error occurs and the navigation is aborted. This can happen if
- * either a network error occurred, or the user aborted the navigation.
- */
-chrome.webNavigation.onErrorOccurred.addListener(function (details) {
-    console.error('webNavigation.onErrorOccurred');
-    console.log(details);
-    doStuff(details);
-});
-
-/**
- * Fires when the frame's history was updated to a new URL. We use this instead
- * of onUpdated, due to some particularities of YouTube.
- */
-chrome.webNavigation.onHistoryStateUpdated.addListener(function (details) {
-    console.info('webNavigation.onHistoryStateUpdated');
-    console.log(details);
-    doStuff(details);
-});
-
-/**
- * Click listener for conext menu items.
- */
-/*chrome.contextMenus.onClicked.addListener(function (info, tab) {
-    console.log(info);
-    var message = { name: 'getClickedElement' };
-    chrome.tabs.sendMessage(tab.id, message, function (response) {
-        console.info('The getBlacklistedUsers request finished.');
-        console.log(response);
-        if (response && response.message && response.message.data > 0) {
-            var element = response.message.data;
-            console.log(element);
-        }
-    });
-});*/
-
 /**
  * Does stuff.
  * @param {Object} details 
@@ -78,7 +20,6 @@ function doStuff(details) {
                     console.info('%ccommentSectionIsLoaded', 'font-weight: bold');
                     console.log(response);  
                     chrome.pageAction.show(tab.id);
-                    //addContextMenuItems();
                     getUsers(tab);
                 }
             });
@@ -147,28 +88,63 @@ function getBlacklistedUsers(users) {
     return blacklisted;
 }
 
-function addContextMenuItems() {
-    if (!contextMenuAdded) {
-        var contextMenuItem = {
-            type: 'normal',
-            id: 'blacklistUser',
-            title: 'Blacklist user',
-            contexts: [ 'link', 'image' ],
-            documentUrlPatterns: [ MP_WATCH_PAGE ],
-            enabled: false
-        };
-        /*chrome.contextMenus.create(contextMenuItem, function () {
-            contextMenuAdded = true;
-        });*/
-    }
-}
+/**
+ * ----------------------------------------------------------------------------
+ * Context menu
+ * ----------------------------------------------------------------------------
+ */
+
+/**
+ * Click listener for conext menu items.
+ */
+chrome.contextMenus.onClicked.addListener(function (info, tab) {
+    console.log(info);
+    var message = { name: 'getClickedElement' };
+    chrome.tabs.sendMessage(tab.id, message, function (response) {
+        console.info('The getBlacklistedUsers request finished.');
+        console.log(response);
+        if (response && response.message && response.message.data > 0) {
+            var element = response.message.data;
+            console.log(element);
+        }
+    });
+});
+
+var contextMenu = {
+    type: 'normal',
+    id: 'blacklistUser',
+    title: 'Blacklist user',
+    contexts: [ 'link', 'image' ],
+    documentUrlPatterns: [ MP_WATCH_PAGE ],
+    enabled: false
+};
+
+chrome.contextMenus.create(contextMenu);
+
+/**
+ * ----------------------------------------------------------------------------
+ * webRequest event handlers
+ * ----------------------------------------------------------------------------
+ */
+
+var webRequestFilters = {
+    urls: [
+        '*://*.youtube.com/watch_fragments_ajax?*&frags=comments*',
+        '*://*.youtube.com/comment_service_ajax?action_get_comments=*'
+    ],
+    types: [
+        'xmlhttprequest'
+    ]
+};
+
+var webRequestOptions = [];
 
 /**
  * Fired when a request is about to occur.
  */
 chrome.webRequest.onBeforeRequest.addListener(function (details) {
-    console.info('webRequest.onBeforeRequest');
-    console.log(details);
+//    console.info('webRequest.onBeforeRequest');
+//    console.log(details);
 }, webRequestFilters, webRequestOptions);
 
 /**
@@ -177,16 +153,16 @@ chrome.webRequest.onBeforeRequest.addListener(function (details) {
  * before any HTTP data is sent.
  */
 chrome.webRequest.onBeforeSendHeaders.addListener(function (details) {
-    console.info('webRequest.onBeforeSendHeaders');
-    console.log(details);
+//    console.info('webRequest.onBeforeSendHeaders');
+//    console.log(details);
 }, webRequestFilters, webRequestOptions);
 
 /**
  * Fired when HTTP response headers of a request have been received.
  */
 chrome.webRequest.onHeadersReceived.addListener(function (details) {
-    console.info('webRequest.onHeadersReceived');
-    console.log(details);
+//    console.info('webRequest.onHeadersReceived');
+//    console.log(details);
 }, webRequestFilters, webRequestOptions);
 
 /**
@@ -198,9 +174,9 @@ chrome.webRequest.onHeadersReceived.addListener(function (details) {
  * modes must be specified in the extraInfoSpec parameter.
  */
 chrome.webRequest.onAuthRequired.addListener(function (details, asyncCallback) {
-    console.info('webRequest.onAuthRequired');
-    console.log(details);
-    console.log(asyncCallback);
+//    console.info('webRequest.onAuthRequired');
+//    console.log(details);
+//    console.log(asyncCallback);
 }, webRequestFilters, webRequestOptions);
 
 /**
@@ -209,24 +185,24 @@ chrome.webRequest.onAuthRequired.addListener(function (details, asyncCallback) {
  * available.
  */
 chrome.webRequest.onResponseStarted.addListener(function (details) {
-    console.info('webRequest.onResponseStarted');
-    console.log(details);
+//    console.info('webRequest.onResponseStarted');
+//    console.log(details);
 }, webRequestFilters, webRequestOptions);
 
 /**
  * Fired when a server-initiated redirect is about to occur.
  */
 chrome.webRequest.onBeforeRedirect.addListener(function (details) {
-    console.info('webRequest.onBeforeRedirect');
-    console.log(details);
+//    console.info('webRequest.onBeforeRedirect');
+//    console.log(details);
 }, webRequestFilters, webRequestOptions);
 
 /**
  * Fired when a request is completed.
  */
 chrome.webRequest.onCompleted.addListener(function (details) {
-    console.warn('webRequest.onCompleted');
-    console.log(details);
+//    console.info('webRequest.onCompleted');
+//    console.log(details);
     if (details.tabId > -1) {
         chrome.tabs.get(details.tabId, function (tab) {
             getUsers(tab);
@@ -238,6 +214,6 @@ chrome.webRequest.onCompleted.addListener(function (details) {
  * Fired when an error occurs.
  */
 chrome.webRequest.onErrorOccurred.addListener(function (details) {
-    console.error('webRequest.onErrorOccurred');
-    console.log(details);
+//    console.error('webRequest.onErrorOccurred');
+//    console.log(details);
 }, webRequestFilters);
