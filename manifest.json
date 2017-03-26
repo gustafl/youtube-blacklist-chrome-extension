@@ -3,7 +3,7 @@
 
 	"name": "BlackList for YouTube",
 	"description": "Adds blacklist functionality to YouTube website.",
-	"version": "0.1.4",
+	"version": "0.1.5",
 
 	"page_action": {
 		"default_icon": "images/middle_finger_19.png",
@@ -12,12 +12,14 @@
 	},
 	
 	"background": {
-		"scripts" : [ "background/background.js" ]
+		"scripts" : [
+			"background/background.js"
+		]
 	},
 
 	"content_scripts": [
 		{
-			"matches": [ "*://www.youtube.com/watch?v=*" ],
+			"matches": [ "*://www.youtube.com/*" ],
 			"js": [ "content_scripts/youtube.js" ],
 			"css": [ "content_scripts/youtube.css" ],
 			"run_at": "document_end"
@@ -38,7 +40,10 @@
 	"permissions" : [
 		"tabs",
 		"webNavigation",
+		"webRequest",
+		"webRequestBlocking",
 		"contextMenus",
+		"storage",
 		"*://www.youtube.com/*"
 	]
 }

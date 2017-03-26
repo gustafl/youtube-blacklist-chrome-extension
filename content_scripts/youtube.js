@@ -1,5 +1,6 @@
 'use strict';
 
+var MP_WATCH_PAGE = '*://www.youtube.com/watch?v=*';
 var COMMENT_SECTION = '#comment-section-renderer-items';
 var COMMENT = 'div.comment-renderer';
 
@@ -17,6 +18,22 @@ var COMMENT = 'div.comment-renderer';
  * runtime.sendMessage
  * storage.*
  */
+
+var clickedElement = null;
+var useCapture = true;  // Bypass event-bubbling
+
+var commentSectionIsLoaded = null;
+
+console.info('Content script reached...');
+
+/**
+ * Listen for right-mouse clicks.
+ */
+document.addEventListener('mousedown', function (event) {
+    if (event.button == 2) {
+        clickedElement = event.target;
+    }
+}, useCapture);
 
 /**
  * Returns a list of distinct users (commenters) from the page. 
@@ -73,12 +90,18 @@ function filterComments(users) {
  * name and data property.
  */
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-    console.info('Content script received message named ' + request.message.name + '.');
+    if (!(request.message && request.message.name)) {
+        console.warn('Content script received a malformed message:');
+        console.warn(request);
+    }
+    console.info('Content script received a message named ' + request.message.name + '.');
     switch (request.message.name) {
         case 'commentSectionIsLoaded':
-            var output = document.querySelector(COMMENT_SECTION) ? true : false;
-            var message = { name: 'commentSectionIsLoaded', data: output };
-            sendResponse({ message: message });
+            if (!commentSectionIsLoaded) {
+                commentSectionIsLoaded = document.querySelector(COMMENT_SECTION) ? true : false;
+                var message = { name: 'commentSectionIsLoaded', data: commentSectionIsLoaded };
+                sendResponse({ message: message });
+            }
             break;
         case 'getUsers':
             var users = getUsers();
@@ -88,6 +111,10 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         case 'filterComments':
             var users = request.message.data;
             filterComments(users);
+            break;
+        case 'getClickedElement':
+            var message = { name: 'getClickedElement', data: clickedElement.value };
+            sendResponse({ message: message });
             break;
         default:
             console.warn('Unknown message: ' + request.message.name);
