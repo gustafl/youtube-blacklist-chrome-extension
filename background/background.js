@@ -1,6 +1,5 @@
 // Match patterns
 var MP_WATCH_PAGE = '*://www.youtube.com/watch?v=*';
-var MP_MORE_COMMENTS_REQUEST = '*://www.youtube.com/comment_service_ajax?action_get_comments=*'
 
 // TODO: These will probably need to be in an object array with one object per tab
 var contextMenuAdded = false;
@@ -9,62 +8,15 @@ var loadMoreButtonIsLoaded = false;
 
 var webRequestFilters = {
     urls: [
-        MP_MORE_COMMENTS_REQUEST
+        '*://*.youtube.com/watch_fragments_ajax?*&frags=comments*',
+        '*://*.youtube.com/comment_service_ajax?action_get_comments=*'
     ],
     types: [
-        "main_frame",
-        "sub_frame",
-        "stylesheet",
-        "script",
-        "image",
-        "font",
-        "object",
-        "xmlhttprequest",
-        "ping",
-        "other"
+        'xmlhttprequest'
     ]
 };
+
 var webRequestOptions = [];
-
-/**
- * Fired when a tab is updated.
- */
-/*chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
-    console.info('tabs.onUpdated');
-    console.log(changeInfo);
-});*/
-
-/**
- * Conditions that the URL being navigated to must satisfy. The 'schemes' and
- * 'ports' fields of UrlFilter are ignored for this event.
- */
-/*chrome.webNavigation.onBeforeNavigate.addListener(function (details) {
-    console.info('webNavigation.onBeforeNavigate');
-    console.log(details);
-    doStuff(details);
-});*/
-
-/**
- * Fired when a navigation is committed. The document (and the resources it
- * refers to, such as images and subframes) might still be downloading, but at
- * least part of the document has been received from the server and the browser
- * has decided to switch to the new document.
- */
-/*chrome.webNavigation.onCommitted.addListener(function (details) {
-    console.info('webNavigation.onCommitted');
-    console.log(details);
-    doStuff(details);
-});*/
-
-/**
- * Fired when a document, including the resources it refers to, is completely
- * loaded and initialized.
- */
-/*chrome.webNavigation.onCompleted.addListener(function (details) {
-    console.info('webNavigation.onCompleted');
-    console.log(details);
-    doStuff(details);
-});*/
 
 /**
  * Fired when the page's DOM is fully constructed, but the referenced resources
@@ -95,24 +47,6 @@ chrome.webNavigation.onHistoryStateUpdated.addListener(function (details) {
     console.log(details);
     doStuff(details);
 });
-
-/**
- * Fired when the reference fragment of a frame was updated. All future events
- * for that frame will use the updated URL.
- */
-/*chrome.webNavigation.onReferenceFragmentUpdated.addListener(function (details) {
-    console.info('webNavigation.onReferenceFragmentUpdated');
-    console.log(details);
-    doStuff(details);
-});*/
-
-/**
- * Fired when a request is about to occur.
- */
-chrome.webRequest.onBeforeRequest.addListener(function (details) {
-    console.info('webRequest.onBeforeRequest');
-    console.log(details);
-}, webRequestFilters, webRequestOptions);
 
 /**
  * Click listener for conext menu items.
@@ -148,15 +82,6 @@ function doStuff(details) {
                     getUsers(tab);
                 }
             });
-/*            // Listen for clicks on 'button.yt-uix-load-more' once the button is loaded
-            var message = { name: 'loadMoreButtonIsLoaded' };
-            chrome.tabs.sendMessage(tab.id, { message: message }, function (response) {
-                if (response && response.message && response.message.data == true) {
-                    console.info('%cloadMoreButtonIsLoaded', 'font-weight: bold');
-                    console.log(response);
-                    chrome.tabs.executeScript(null, { file: "background/eventListeners.js" });
-                }
-            });*/
         }
     });
 }
@@ -179,7 +104,6 @@ function isYouTubeWatchPage(tab) {
  */
 function getUsers(tab) {
     console.warn(getUsers);
-    console.log(tab);
     var message = { name: 'getUsers' };
     chrome.tabs.sendMessage(tab.id, { message: message }, function (response) {
         console.info('%cgetUsers', 'font-weight: bold');
@@ -305,13 +229,8 @@ chrome.webRequest.onCompleted.addListener(function (details) {
     console.log(details);
     if (details.tabId > -1) {
         chrome.tabs.get(details.tabId, function (tab) {
-            //if (tab && isYouTubeWatchPage(tab)) {
-            if (tab) {
-                getUsers(tab);
-            }
+            getUsers(tab);
         });
-    } else {
-        console.log('No fucking tabId!');
     }
 }, webRequestFilters, webRequestOptions);
 
