@@ -96,8 +96,20 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
             if (response.message.data) {
                 var userId = response.message.data;
                 console.log('User ID found: ' + userId);
+                chrome.notifications.create('storage.success', {
+                    type: 'basic',
+                    title: 'Bye bye!',
+                    message: 'You won\'t see more from this clown.',
+                    iconUrl: 'images/hidden.png'
+                });
             } else {
                 console.log('No user ID found.');
+                chrome.notifications.create('storage.failure', {
+                    type: 'basic',
+                    title: 'Huh?',
+                    message: 'That does not seem to be a comment.',
+                    iconUrl: 'images/question.png'
+                });
             }
         }
     });

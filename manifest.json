@@ -38,12 +38,11 @@
 	},
 
 	"permissions" : [
-		"tabs",
-		"webNavigation",
-		"webRequest",
-		"webRequestBlocking",
 		"contextMenus",
+		"notifications",
 		"storage",
+		"tabs",
+		"webRequest",
 		"*://www.youtube.com/*"
 	]
 }
