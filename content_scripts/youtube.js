@@ -1,8 +1,12 @@
 'use strict';
 
+console.info('Content script reached...');
+
 var MP_WATCH_PAGE = '*://www.youtube.com/watch?v=*';
 var COMMENT_SECTION = '#comment-section-renderer-items';
 var COMMENT = 'div.comment-renderer';
+var COMMENT_CLASS = 'comment-renderer';
+//var COMMENT_USER = 'div.comment-renderer a[data-ytid]';
 
 /**
  * Available functions in the chrome.* API
@@ -19,21 +23,29 @@ var COMMENT = 'div.comment-renderer';
  * storage.*
  */
 
-var clickedElement = null;
 var useCapture = true;  // Bypass event-bubbling
 
 var commentSectionIsLoaded = null;
 
-console.info('Content script reached...');
+
 
 /**
- * Listen for right-mouse clicks.
+ * Returns the whole comment element given any element within it.
+ * @param {Element} element 
  */
-document.addEventListener('mousedown', function (event) {
-    if (event.button == 2) {
-        clickedElement = event.target;
+function getWholeComment(element) {
+    var element = element.target;
+    if (element.classList.contains(COMMENT_CLASS)) {
+        return element;
+    } else {
+        while (element = element.parentNode) {
+            if (element.classList && element.classList.contains(COMMENT_CLASS)) {
+                return element;
+            }
+        }
     }
-}, useCapture);
+    return false;
+}
 
 /**
  * Returns a list of distinct users (commenters) from the page. 
@@ -74,14 +86,15 @@ function getUsers() {
  * @param {Array} users
  */
 function filterComments(users) {
-    for (var i = 0; i < users.length; i++) {
-        var user = users[i];
-        console.log(user);
-/*        var element = currentValue.querySelector('a');
-        var userId = element.getAttribute('data-ytid');
-        if (blacklistedUsers.indexOf(userId) > -1) {
-            element.classList.add('blacklisted-user');
-        }*/
+    var commentSection = document.querySelector(COMMENT_SECTION);
+    if (commentSection) {
+        for (var i = 0; i < users.length; i++) {
+            var user = users[i];
+            var query = 'div.comment-renderer a[data-ytid~=' + user + ']';
+            var comment = commentSection.querySelector(query);
+            comment.classList.add('red');
+            // TODO
+        }
     }
 }
 
@@ -112,12 +125,44 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             var users = request.message.data;
             filterComments(users);
             break;
-        case 'getClickedElement':
-            var message = { name: 'getClickedElement', data: clickedElement.value };
+        case 'getUserId':
+            var message = { name: 'getUserId', data: userId };
             sendResponse({ message: message });
+            userId = null;
             break;
         default:
             console.warn('Unknown message: ' + request.message.name);
             break;
     }
 });
+
+/**
+ * ----------------------------------------------------------------------------
+ * Context menu
+ * ----------------------------------------------------------------------------
+ */
+var userId = null;
+
+document.addEventListener('contextmenu', function (event) {
+    var commentElement = clickInsideElement(event);
+    if (commentElement) {
+        var link = commentElement.querySelector('a[data-ytid]');
+        if (link) {
+            userId = link.getAttribute('data-ytid');
+        }
+    }
+});
+
+function clickInsideElement(event) {
+    var element = event.target;
+    if (element.classList.contains(COMMENT_CLASS)) {
+        return element;
+    } else {
+        while (element = element.parentNode) {
+            if (element.classList && element.classList.contains(COMMENT_CLASS)) {
+                return element;
+            }
+        }
+    }
+    return false;
+}

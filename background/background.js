@@ -53,21 +53,13 @@ function getUsers(tab) {
             var users = response.message.data;
             var text = 'Users loaded now: ' + users.length;
             console.log(text);
-            //filterComments(tab, users);
+            var blacklisted = getBlacklistedUsers(users);
+            console.info('%cgetBlacklistedUsers', 'font-weight: bold');
+            console.log(blacklisted);
+            var message = { name: 'filterComments', data: blacklisted };
+            chrome.tabs.sendMessage(tab.id, { message: message });
         }
     });
-}
-
-/**
- * Ask the content script to filter out comments from blacklisted users.
- * @param {chrome.tabs.Tab} tab
- */
-function filterComments(tab, users) {
-    var blacklisted = getBlacklistedUsers(users);
-    console.info('%cgetBlacklistedUsers', 'font-weight: bold');
-    console.log(blacklisted);
-    var message = { name: 'filterComments', data: blacklisted };
-    chrome.tabs.sendMessage(tab.id, { message: message });
 }
 
 /**
@@ -98,28 +90,27 @@ function getBlacklistedUsers(users) {
  * Click listener for conext menu items.
  */
 chrome.contextMenus.onClicked.addListener(function (info, tab) {
-    console.log(info);
-    var message = { name: 'getClickedElement' };
-    chrome.tabs.sendMessage(tab.id, message, function (response) {
-        console.info('The getBlacklistedUsers request finished.');
-        console.log(response);
-        if (response && response.message && response.message.data > 0) {
-            var element = response.message.data;
-            console.log(element);
+    var message = { name: 'getUserId' };
+    chrome.tabs.sendMessage(tab.id, { message: message }, function (response) {
+        if (response && response.message) {
+            if (response.message.data) {
+                var userId = response.message.data;
+                console.log('User ID found: ' + userId);
+            } else {
+                console.log('No user ID found.');
+            }
         }
     });
 });
 
-var contextMenu = {
+chrome.contextMenus.create({
     type: 'normal',
     id: 'blacklistUser',
     title: 'Blacklist user',
-    contexts: [ 'link', 'image' ],
+    contexts: [ 'all' ],
     documentUrlPatterns: [ MP_WATCH_PAGE ],
-    enabled: false
-};
-
-chrome.contextMenus.create(contextMenu);
+    enabled: true
+});
 
 /**
  * ----------------------------------------------------------------------------
