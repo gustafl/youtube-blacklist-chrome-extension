@@ -3,7 +3,7 @@
 
 	"name": "BlackList for YouTube",
 	"description": "Adds blacklist functionality to YouTube website.",
-	"version": "0.1.5",
+	"version": "0.1.6",
 
 	"page_action": {
 		"default_icon": "images/middle_finger_19.png",
@@ -36,6 +36,10 @@
 		"48": "images/middle_finger_48.png",
 		"128": "images/middle_finger_128.png"
 	},
+
+	"web_accessible_resources": [
+		"images/*.png"
+	],
 
 	"permissions" : [
 		"contextMenus",

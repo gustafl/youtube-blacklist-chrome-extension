@@ -83,10 +83,66 @@ function filterComments(users) {
     if (commentSection) {
         for (var i = 0; i < users.length; i++) {
             var user = users[i];
-            var query = 'div.comment-renderer a[data-ytid~=' + user + ']';
-            var comment = commentSection.querySelector(query);
-            comment.classList.add('red');
-            // TODO
+            var query = 'div.comment-renderer a[data-ytid="' + user + '"]';
+            var element = commentSection.querySelector(query);
+            if (element) {
+                var comment = element.parentNode;  // div.comment-renderer
+
+                // Replace user name and link
+                query = 'div.comment-renderer-header a.comment-author-text';
+                element = comment.querySelector(query);
+                if (element) {
+                    var parent = element.parentNode;  // div.comment-renderer-header
+                    element.remove();
+                    var span = document.createElement('span');
+                    span.classList.add('comment-author-text')
+                    span.setAttribute('data-ytid', user);
+                    span.setAttribute('style', 'color: gray');
+                    span.textContent = 'Blacklisted user';
+                    parent.insertBefore(span, parent.firstChild);
+                }
+
+                // Replace image
+                query = 'span.comment-author-thumbnail img';
+                element = comment.querySelector(query);
+                if (element) {
+                    var parent = element.parentNode;  // div.comment-renderer-text
+                    var clone = element.cloneNode();
+                    element.setAttribute('style', 'display: none');
+                    var path = chrome.runtime.getURL('images/hidden_75.png');
+                    clone.setAttribute('src', path);
+                    clone.setAttribute('alt', 'Blacklisted user');
+                    parent.insertBefore(clone, parent.firstChild);
+                }
+
+                // Replace text
+                query = 'div.comment-renderer-text-content';
+                element = comment.querySelector(query);
+                if (element) {
+                    var parent = element.parentNode;  // div.comment-renderer-text
+                    element.setAttribute('style', 'display: none');
+                    var sibling = document.createElement('div');
+                    sibling.classList.add('comment-renderer-text-content');
+                    sibling.setAttribute('style', 'color: gray; font-style: italic');
+                    sibling.innerHTML = 'This comment was removed because the user is blacklisted.&#65279;';
+                    parent.insertBefore(sibling, parent.firstChild);
+                    parent.setAttribute('style', 'background-color: white');
+                    parent.parentNode.setAttribute('style', 'background-color: white');
+                    parent.parentNode.parentNode.setAttribute('style', 'background-color: white');
+                }
+
+                query = 'div.comment-action-buttons-toolbar';
+                element = comment.querySelector(query);
+                if (element) {
+                    element.setAttribute('style', 'display: none');
+                }
+
+                query = 'comment-renderer-time a'
+                element = comment.querySelector(query);
+                if (element) {
+                    element.setAttribute('style', 'color: silver');
+                }
+            }
         }
     }
 }

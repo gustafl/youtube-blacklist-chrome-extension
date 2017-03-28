@@ -1,54 +1,26 @@
-// Match patterns
 var MP_WATCH_PAGE = '*://www.youtube.com/watch?v=*';
 
-/**
- * Asks the content script which users are present on the current page. Then
- * hands over to filterComments().
- * @param {chrome.tabs.Tab} tab
- */
 function getUsers(tab) {
     var message = { name: 'getUsers' };
     chrome.tabs.sendMessage(tab.id, { message: message }, function (response) {
         if (response && response.message && response.message.data.length > 0) {
             var users = response.message.data;
             var text = 'Users loaded now: ' + users.length;
-            console.log(text);
-            /*var blacklisted = getBlacklistedUsers(users);
-            console.info('%cgetBlacklistedUsers', 'font-weight: bold');
-            console.log(blacklisted);
-            var message = { name: 'filterComments', data: blacklisted };
-            chrome.tabs.sendMessage(tab.id, { message: message });*/
+            console.info(text);
+            chrome.storage.local.get(function (items) {
+                var blacklisted = [];
+                for (var key in items) {
+                    if (items.hasOwnProperty(key) && items[key] === 'B') {
+                        blacklisted.push(key);
+                    }
+                }
+                var message = { name: 'filterComments', data: blacklisted };
+                chrome.tabs.sendMessage(tab.id, { message: message });
+            });
         }
     });
 }
 
-/**
- * Get blacklisted users from storage.
- */
-function getBlacklistedUsers(users) {
-    var blacklisted = [];
-    for (i = 0; i < users.length; i++) {
-        var key = 'user.' + users[i];
-        chrome.storage.local.get(key, function (items) {
-            if (items.length > 0) {
-                console.info('storage.local.get');
-                console.log(items);
-                //blacklisted.push(users[i]);
-            }
-        });
-    }
-    return blacklisted;
-}
-
-/**
- * ----------------------------------------------------------------------------
- * Context menu
- * ----------------------------------------------------------------------------
- */
-
-/**
- * Click listener for conext menu items.
- */
 chrome.contextMenus.onClicked.addListener(function (info, tab) {
     var message = { name: 'getUserId' };
     chrome.tabs.sendMessage(tab.id, { message: message }, function (response) {
@@ -56,7 +28,9 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
             if (response.message.data) {
                 var userId = response.message.data;
                 console.log('User ID found: ' + userId);
-                // TODO: Store to chrome.storage.sync.
+                var record = {};
+                record[userId] = 'B';
+                chrome.storage.local.set(record);
                 chrome.notifications.create('storage.success', {
                     type: 'basic',
                     title: 'Bye bye!',
@@ -85,16 +59,11 @@ chrome.contextMenus.create({
     enabled: true
 });
 
-/**
- * ----------------------------------------------------------------------------
- * webRequest event handlers
- * ----------------------------------------------------------------------------
- */
-
 var filters = {
     urls: [
         '*://*.youtube.com/watch_fragments_ajax?*&frags=comments*',
-        '*://*.youtube.com/comment_service_ajax?action_get_comments=*'
+        '*://*.youtube.com/comment_service_ajax?action_get_comments=*',
+        '*://*.youtube.com/comment_service_ajax?action_get_comment_replies=*'
     ],
     types: [
         'xmlhttprequest'
@@ -103,9 +72,6 @@ var filters = {
 
 var options = [];
 
-/**
- * Fired when a request is completed.
- */
 chrome.webRequest.onCompleted.addListener(function (details) {
     if (details.tabId > -1) {
         chrome.tabs.get(details.tabId, function (tab) {
