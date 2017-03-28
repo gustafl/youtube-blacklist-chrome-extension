@@ -6,7 +6,6 @@ var MP_WATCH_PAGE = '*://www.youtube.com/watch?v=*';
 var COMMENT_SECTION = '#comment-section-renderer-items';
 var COMMENT = 'div.comment-renderer';
 var COMMENT_CLASS = 'comment-renderer';
-//var COMMENT_USER = 'div.comment-renderer a[data-ytid]';
 
 /**
  * Available functions in the chrome.* API
@@ -22,12 +21,6 @@ var COMMENT_CLASS = 'comment-renderer';
  * runtime.sendMessage
  * storage.*
  */
-
-var useCapture = true;  // Bypass event-bubbling
-
-var commentSectionIsLoaded = null;
-
-
 
 /**
  * Returns the whole comment element given any element within it.
@@ -109,13 +102,6 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     }
     console.info('Content script received a message named ' + request.message.name + '.');
     switch (request.message.name) {
-        case 'commentSectionIsLoaded':
-            if (!commentSectionIsLoaded) {
-                commentSectionIsLoaded = document.querySelector(COMMENT_SECTION) ? true : false;
-                var message = { name: 'commentSectionIsLoaded', data: commentSectionIsLoaded };
-                sendResponse({ message: message });
-            }
-            break;
         case 'getUsers':
             var users = getUsers();
             var message = { name: 'getUsers', data: users };
