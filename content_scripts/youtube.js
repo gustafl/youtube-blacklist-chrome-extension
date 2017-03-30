@@ -77,41 +77,36 @@ function HideCommentHeader(comment) {
 }
 
 function HideCommentImage(comment) {
-    var query = 'span.comment-author-thumbnail img';
-    var element = comment.querySelector(query);
-    if (element) {
-        var parent = element.parentNode;
-        var clone = element.cloneNode();
-        element.setAttribute('style', 'display: none');
+    var img = comment.querySelector('span.comment-author-thumbnail img');
+    if (img) {
+        var parent = img.parentNode;
+        var clone = img.cloneNode();
+        img.setAttribute('style', 'display: none');
         var path = chrome.runtime.getURL('images/hidden_75.png');
         clone.setAttribute('src', path);
         clone.setAttribute('alt', 'Blacklisted user');
+        clone.classList.add('blacklisted');
         parent.insertBefore(clone, parent.firstChild);
     }
 }
 
 function HideCommentText(comment) {
-    var query = 'div.comment-renderer-text-content';
-    var element = comment.querySelector(query);
-    if (element) {
-        var parent = element.parentNode;  // div.comment-renderer-text
-        element.setAttribute('style', 'display: none');
-        var sibling = document.createElement('div');
-        sibling.classList.add('comment-renderer-text-content');
-        sibling.setAttribute('style', 'color: gray; font-style: italic');
-        sibling.innerHTML = 'This comment was removed because the user is blacklisted.&#65279;';
-        parent.insertBefore(sibling, parent.firstChild);
-        parent.setAttribute('style', 'background-color: white');
-        parent.parentNode.setAttribute('style', 'background-color: white');
-        parent.parentNode.parentNode.setAttribute('style', 'background-color: white');
+    var commentText = comment.querySelector('div.comment-renderer-text-content');
+    if (commentText) {
+        var parent = commentText.parentNode;
+        var clone = commentText.cloneNode();
+        commentText.setAttribute('style', 'display: none');
+        clone.classList.add('blacklisted');
+        clone.setAttribute('style', 'color: gray; font-style: italic');
+        clone.innerHTML = 'This comment was removed because the user is blacklisted.&#65279;';
+        parent.insertBefore(clone, parent.firstChild);
     }
 }
 
-function HideCommentBottom(comment) {
-    var query = 'div.comment-action-buttons-toolbar';
-    var element = comment.querySelector(query);
-    if (element) {
-        element.setAttribute('style', 'display: none');
+function HideCommentFooter(comment) {
+    var actionButtons = comment.querySelector('div.comment-action-buttons-toolbar');
+    if (actionButtons) {
+        actionButtons.setAttribute('style', 'display: none');
     }
 }
 
@@ -136,9 +131,9 @@ function filterComments(users) {
                         }
                     }
                     HideCommentHeader(element);
-                    //HideCommentImage(element);
-                    //HideCommentText(element);
-                    //HideCommentFooter(element);
+                    HideCommentImage(element);
+                    HideCommentText(element);
+                    HideCommentFooter(element);
                 }
             }
         }
