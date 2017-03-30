@@ -32,7 +32,7 @@ function getUsers() {
     }
 
     // Make sure we got some comments
-    var comments = commentRoot.querySelectorAll('div.' + COMMENT);
+    var comments = commentRoot.querySelectorAll('div.' + COMMENT_CLASS);
     if (!comments) {
         console.warn('No comments found.');
         return [];
