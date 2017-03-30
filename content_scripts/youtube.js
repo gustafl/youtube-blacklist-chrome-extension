@@ -50,70 +50,95 @@ function getUsers() {
     return users;
 }
 
+function HideCommentHeader(comment) {
+    // Username
+    var commentHeader = comment.querySelector('div.comment-renderer-header');
+    if (commentHeader) {
+        var username = commentHeader.querySelector('a.comment-author-text');
+        username.setAttribute('style', 'display: none');
+        var span = document.createElement('span');
+        span.classList.add('comment-author-text');
+        span.classList.add('blacklisted');
+        span.setAttribute('style', 'color: gray');
+        span.textContent = 'Blacklisted user';
+        commentHeader.insertBefore(span, commentHeader.firstChild);
+    }
+    // Time
+    var commentTime = commentHeader.querySelector('span.comment-renderer-time');
+    if (commentTime) {
+        var a = commentTime.querySelector('a');
+        a.setAttribute('style', 'display: none');
+        var span = document.createElement('span');
+        span.classList.add('blacklisted');
+        span.setAttribute('style', 'color: gray');
+        span.textContent = a.textContent;
+        commentTime.insertBefore(span, commentTime.firstChild);
+    }
+}
+
+function HideCommentImage(comment) {
+    var query = 'span.comment-author-thumbnail img';
+    var element = comment.querySelector(query);
+    if (element) {
+        var parent = element.parentNode;
+        var clone = element.cloneNode();
+        element.setAttribute('style', 'display: none');
+        var path = chrome.runtime.getURL('images/hidden_75.png');
+        clone.setAttribute('src', path);
+        clone.setAttribute('alt', 'Blacklisted user');
+        parent.insertBefore(clone, parent.firstChild);
+    }
+}
+
+function HideCommentText(comment) {
+    var query = 'div.comment-renderer-text-content';
+    var element = comment.querySelector(query);
+    if (element) {
+        var parent = element.parentNode;  // div.comment-renderer-text
+        element.setAttribute('style', 'display: none');
+        var sibling = document.createElement('div');
+        sibling.classList.add('comment-renderer-text-content');
+        sibling.setAttribute('style', 'color: gray; font-style: italic');
+        sibling.innerHTML = 'This comment was removed because the user is blacklisted.&#65279;';
+        parent.insertBefore(sibling, parent.firstChild);
+        parent.setAttribute('style', 'background-color: white');
+        parent.parentNode.setAttribute('style', 'background-color: white');
+        parent.parentNode.parentNode.setAttribute('style', 'background-color: white');
+    }
+}
+
+function HideCommentBottom(comment) {
+    var query = 'div.comment-action-buttons-toolbar';
+    var element = comment.querySelector(query);
+    if (element) {
+        element.setAttribute('style', 'display: none');
+    }
+}
+
 // Hides the comments of users in the input array.
 function filterComments(users) {
     var commentSection = document.querySelector(COMMENT_SECTION);
     if (commentSection) {
+        // Loop through blacklisted users
         for (var i = 0; i < users.length; i++) {
             var user = users[i];
-            var query = 'div.comment-renderer a[data-ytid="' + user + '"]';
-            var element = commentSection.querySelector(query);
-            if (element) {
-                var comment = element.parentNode;  // div.comment-renderer
-
-                // Replace user name and link
-                query = 'div.comment-renderer-header a.comment-author-text';
-                element = comment.querySelector(query);
-                if (element) {
-                    var parent = element.parentNode;  // div.comment-renderer-header
-                    element.remove();
-                    var span = document.createElement('span');
-                    span.classList.add('comment-author-text')
-                    span.setAttribute('data-ytid', user);
-                    span.setAttribute('style', 'color: gray');
-                    span.textContent = 'Blacklisted user';
-                    parent.insertBefore(span, parent.firstChild);
-                }
-
-                // Replace image
-                query = 'span.comment-author-thumbnail img';
-                element = comment.querySelector(query);
-                if (element) {
-                    var parent = element.parentNode;  // div.comment-renderer-text
-                    var clone = element.cloneNode();
-                    element.setAttribute('style', 'display: none');
-                    var path = chrome.runtime.getURL('images/hidden_75.png');
-                    clone.setAttribute('src', path);
-                    clone.setAttribute('alt', 'Blacklisted user');
-                    parent.insertBefore(clone, parent.firstChild);
-                }
-
-                // Replace text
-                query = 'div.comment-renderer-text-content';
-                element = comment.querySelector(query);
-                if (element) {
-                    var parent = element.parentNode;  // div.comment-renderer-text
-                    element.setAttribute('style', 'display: none');
-                    var sibling = document.createElement('div');
-                    sibling.classList.add('comment-renderer-text-content');
-                    sibling.setAttribute('style', 'color: gray; font-style: italic');
-                    sibling.innerHTML = 'This comment was removed because the user is blacklisted.&#65279;';
-                    parent.insertBefore(sibling, parent.firstChild);
-                    parent.setAttribute('style', 'background-color: white');
-                    parent.parentNode.setAttribute('style', 'background-color: white');
-                    parent.parentNode.parentNode.setAttribute('style', 'background-color: white');
-                }
-
-                query = 'div.comment-action-buttons-toolbar';
-                element = comment.querySelector(query);
-                if (element) {
-                    element.setAttribute('style', 'display: none');
-                }
-
-                query = 'comment-renderer-time a'
-                element = comment.querySelector(query);
-                if (element) {
-                    element.setAttribute('style', 'color: silver');
+            // Find all comments by user
+            var query = 'a.comment-author-text[data-ytid="' + user + '"]';
+            var elementList = commentSection.querySelectorAll(query);
+            if (elementList.length > 0) {
+                // Loop through comments by user
+                for (var j = 0; j < elementList.length; j++) {
+                    var element = elementList[j];
+                    // Find the ancestor with the comment class (the full comment)
+                    while (element = element.parentNode) {
+                        if (element.classList && element.classList.contains(COMMENT_CLASS)) {
+                            break;
+                        }
+                    }
+                    HideCommentHeader(element);
+                    //HideCommentImage(element);
+                    //HideCommentText(element);
+                    //HideCommentFooter(element);
                 }
             }
         }
@@ -125,7 +150,7 @@ function filterComments(users) {
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     if (!(request.message && request.message.name)) {
         console.warn('Content script received a malformed message:');
-        console.warn(request);
+        console.log(request);
     }
     console.info('Content script received a message named ' + request.message.name + '.');
     switch (request.message.name) {

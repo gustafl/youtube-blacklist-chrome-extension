@@ -7,16 +7,27 @@ function getUsers(tab) {
             var users = response.message.data;
             var text = 'Users loaded now: ' + users.length;
             console.info(text);
-            chrome.storage.local.get(function (items) {
-                var blacklisted = [];
-                for (var key in items) {
-                    if (items.hasOwnProperty(key) && items[key] === 'B') {
-                        blacklisted.push(key);
-                    }
+            filterComments(tab, users);
+        }
+    });
+}
+
+function filterComments(tab, users) {
+    chrome.storage.local.get(function (items) {
+        // Make a list of blacklisted users on the current page
+        var blacklisted = [];
+        for (var key in items) {
+            if (items.hasOwnProperty(key) && items[key] === 'B') {
+                if (users.indexOf(key) > -1) {
+                    blacklisted.push(key);
                 }
-                var message = { name: 'filterComments', data: blacklisted };
-                chrome.tabs.sendMessage(tab.id, { message: message });
-            });
+            }
+        }
+        // If there are blacklisted users on the page...
+        if (blacklisted.length > 0) {
+            // ...send a filter message to the content script
+            var message = { name: 'filterComments', data: blacklisted };
+            chrome.tabs.sendMessage(tab.id, { message: message });
         }
     });
 }
@@ -28,11 +39,18 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
     chrome.tabs.sendMessage(tab.id, { message: message }, function (response) {
         if (response && response.message) {
             if (response.message.data) {
+                // If we got a user ID
                 var userId = response.message.data;
                 console.log('User ID found: ' + userId);
+                // Save user record to Chrome's local storage 
                 var record = {};
                 record[userId] = 'B';
                 chrome.storage.local.set(record);
+                // Hide this user's comments
+                var users = [];
+                users.push(userId);
+                filterComments(tab, users);
+                // Notify user of success
                 chrome.notifications.create('storage.success', {
                     type: 'basic',
                     title: 'Bye bye!',
@@ -40,6 +58,7 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
                     iconUrl: 'images/hidden.png'
                 });
             } else {
+                // If the user clicked something other than a comment
                 console.log('No user ID found.');
                 chrome.notifications.create('storage.failure', {
                     type: 'basic',

@@ -2,8 +2,8 @@
 	"manifest_version": 2,
 
 	"name": "BlackList for YouTube",
-	"description": "Adds blacklist functionality to YouTube website.",
-	"version": "0.1.6",
+	"description": "Blacklist dumb people on YouTube.",
+	"version": "0.1.7",
 
 	"page_action": {
 		"default_icon": "images/middle_finger_19.png",
