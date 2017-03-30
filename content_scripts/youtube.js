@@ -1,10 +1,6 @@
 'use strict';
 
-console.info('Content script reached...');
-
-var MP_WATCH_PAGE = '*://www.youtube.com/watch?v=*';
 var COMMENT_SECTION = '#comment-section-renderer-items';
-var COMMENT = 'div.comment-renderer';
 var COMMENT_CLASS = 'comment-renderer';
 
 /**
@@ -22,27 +18,7 @@ var COMMENT_CLASS = 'comment-renderer';
  * storage.*
  */
 
-/**
- * Returns the whole comment element given any element within it.
- * @param {Element} element 
- */
-function getWholeComment(element) {
-    var element = element.target;
-    if (element.classList.contains(COMMENT_CLASS)) {
-        return element;
-    } else {
-        while (element = element.parentNode) {
-            if (element.classList && element.classList.contains(COMMENT_CLASS)) {
-                return element;
-            }
-        }
-    }
-    return false;
-}
-
-/**
- * Returns a list of distinct users (commenters) from the page. 
- */
+// Returns a list of distinct users from the page. 
 function getUsers() {
     
     // Prepare an array of data-ytid strings
@@ -56,7 +32,7 @@ function getUsers() {
     }
 
     // Make sure we got some comments
-    var comments = commentRoot.querySelectorAll(COMMENT);
+    var comments = commentRoot.querySelectorAll('div.' + COMMENT);
     if (!comments) {
         console.warn('No comments found.');
         return [];
@@ -74,10 +50,7 @@ function getUsers() {
     return users;
 }
 
-/**
- * Hide the comments of the users in the input array.
- * @param {Array} users
- */
+// Hides the comments of users in the input array.
 function filterComments(users) {
     var commentSection = document.querySelector(COMMENT_SECTION);
     if (commentSection) {
@@ -147,10 +120,8 @@ function filterComments(users) {
     }
 }
 
-/**
- * Listens for various messages. Each message object (request.message) has a
- * name and data property.
- */
+// chrome.runtime.onMessage
+
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     if (!(request.message && request.message.name)) {
         console.warn('Content script received a malformed message:');
@@ -178,11 +149,8 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     }
 });
 
-/**
- * ----------------------------------------------------------------------------
- * Context menu
- * ----------------------------------------------------------------------------
- */
+// Context menu
+
 var userId = null;
 
 document.addEventListener('contextmenu', function (event) {

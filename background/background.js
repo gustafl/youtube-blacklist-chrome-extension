@@ -21,6 +21,8 @@ function getUsers(tab) {
     });
 }
 
+// chrome.contextMenus.onClicked
+
 chrome.contextMenus.onClicked.addListener(function (info, tab) {
     var message = { name: 'getUserId' };
     chrome.tabs.sendMessage(tab.id, { message: message }, function (response) {
@@ -58,6 +60,8 @@ chrome.contextMenus.create({
     documentUrlPatterns: [ MP_WATCH_PAGE ],
     enabled: true
 });
+
+// chrome.webRequest.onCompleted
 
 var filters = {
     urls: [
