@@ -51,17 +51,48 @@ function getUsers() {
 }
 
 function HideCommentHeader(comment) {
+
+    // Pinned
+    var pinned = comment.querySelector('div.comment-renderer-pinned-comment-badge');
+    if (pinned) {
+        pinned.setAttribute('style', 'display: none');
+    }
+
     // Username
     var commentHeader = comment.querySelector('div.comment-renderer-header');
     if (commentHeader) {
-        var username = commentHeader.querySelector('a.comment-author-text');
-        username.setAttribute('style', 'display: none');
-        var span = document.createElement('span');
-        span.classList.add('comment-author-text');
-        span.classList.add('blacklisted');
-        span.setAttribute('style', 'color: gray');
-        span.textContent = 'Blacklisted user';
-        commentHeader.insertBefore(span, commentHeader.firstChild);
+        var creator = commentHeader.querySelector('span.creator');
+        if (!creator) {
+            var username = commentHeader.querySelector('a.comment-author-text');
+            username.setAttribute('style', 'display: none');
+            var span = document.createElement('span');
+            span.classList.add('comment-author-text');
+            span.classList.add('blacklisted');
+            span.setAttribute('style', 'color: gray');
+            span.textContent = 'Blacklisted user';
+            commentHeader.insertBefore(span, commentHeader.firstChild);
+        } else {
+            // Clone <span> containing the <a>
+            var clone = creator.cloneNode();
+            clone.setAttribute('style', 'background-color: gray');
+            clone.classList.add('blacklisted');
+            commentHeader.insertBefore(clone, commentHeader.firstChild);
+
+            // Hide the original span
+            creator.setAttribute('style', 'display: none');
+
+            // Hide the <a> in the <span> clone
+            var username = commentHeader.querySelector('a.comment-author-text');
+
+            // Add <span> to replace the inner <a> element in the clone
+            var span = document.createElement('span');
+            span.classList.add('comment-author-text');
+            span.setAttribute('style', 'color: white');
+            span.textContent = 'Blacklisted user';
+            clone.insertBefore(span, clone.firstChild);
+        }
+        
+        
     }
     // Time
     var commentTime = commentHeader.querySelector('span.comment-renderer-time');
@@ -101,6 +132,10 @@ function HideCommentText(comment) {
         clone.innerHTML = 'This comment was removed because the user is blacklisted.&#65279;';
         parent.insertBefore(clone, parent.firstChild);
     }
+    var readMore = comment.querySelector('div.comment-text-toggle');
+    if (readMore) {
+        readMore.setAttribute('style', 'display: none');
+    }
 }
 
 function HideCommentFooter(comment) {
@@ -130,10 +165,12 @@ function filterComments(users) {
                             break;
                         }
                     }
-                    HideCommentHeader(element);
-                    HideCommentImage(element);
-                    HideCommentText(element);
-                    HideCommentFooter(element);
+                    if (element.querySelectorAll('.blacklisted').length == 0) {
+                        HideCommentHeader(element);
+                        HideCommentImage(element);
+                        HideCommentText(element);
+                        HideCommentFooter(element);
+                    }
                 }
             }
         }
