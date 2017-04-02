@@ -118,9 +118,10 @@ function HideCommentImage(comment) {
         var parent = img.parentNode;
         var clone = img.cloneNode();
         img.setAttribute('style', 'display: none');
-        var path = chrome.runtime.getURL('images/hidden_75.png');
+        var path = chrome.runtime.getURL('images/hidden.png');
         clone.setAttribute('src', path);
         clone.setAttribute('alt', 'Blacklisted user');
+        clone.setAttribute('style', 'background-color: white');
         clone.classList.add('blacklisted');
         parent.insertBefore(clone, parent.firstChild);
     }
