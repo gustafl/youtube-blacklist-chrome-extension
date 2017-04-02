@@ -3,10 +3,10 @@
 
 	"name": "BlackList for YouTube",
 	"description": "Blacklist dumb people on YouTube.",
-	"version": "0.2.0",
+	"version": "0.2.1",
 
 	"page_action": {
-		"default_icon": "images/middle_finger_19.png",
+		"default_icon": "images/hidden.png",
 		"default_title": "BlackList for YouTube",
 		"default_popup": "popup/popup.html"
 	},
@@ -32,9 +32,9 @@
   	},
 
 	"icons": {
-		"16": "images/middle_finger_16.png",
-		"48": "images/middle_finger_48.png",
-		"128": "images/middle_finger_128.png"
+		"16": "images/hidden.png",
+		"48": "images/hidden.png",
+		"128": "images/hidden.png"
 	},
 
 	"web_accessible_resources": [

@@ -136,6 +136,14 @@ function HideCommentText(comment) {
         clone.setAttribute('style', 'color: gray; font-style: italic');
         clone.innerHTML = 'This comment was removed because the user is blacklisted.&#65279;';
         parent.insertBefore(clone, parent.firstChild);
+        // Show text toggle button
+        var div = document.createElement('div');
+        div.setAttribute('style', 'margin-top: -8px');
+        clone.parentNode.insertBefore(div, clone.nextSibling);
+        var button = document.createElement('button');
+        button.classList.add('yt-uix-button-link');
+        button.textContent = 'Show';
+        div.appendChild(button);
     }
     var readMore = comment.querySelector('div.comment-text-toggle');
     if (readMore) {
