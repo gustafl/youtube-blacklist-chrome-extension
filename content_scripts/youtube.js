@@ -55,7 +55,7 @@ function HideCommentHeader(comment) {
     // Pinned
     var pinned = comment.querySelector('div.comment-renderer-pinned-comment-badge');
     if (pinned) {
-        pinned.setAttribute('style', 'display: none');
+        pinned.classList.add('ytbl-hide');  // Hiding
     }
 
     // Username
@@ -64,31 +64,32 @@ function HideCommentHeader(comment) {
         var creator = commentHeader.querySelector('span.creator');
         if (!creator) {
             var username = commentHeader.querySelector('a.comment-author-text');
-            username.setAttribute('style', 'display: none');
+            username.classList.add('ytbl-hide');  // Hiding
             var span = document.createElement('span');
-            span.classList.add('comment-author-text');
-            span.classList.add('blacklisted');
-            span.setAttribute('style', 'color: gray');
+            //span.setAttribute('style', 'color: gray');
             span.textContent = 'Blacklisted user';
+            span.classList.add('comment-author-text');
+            span.classList.add('ytbl-filler');
             commentHeader.insertBefore(span, commentHeader.firstChild);
         } else {
             // Clone <span> containing the <a>
             var clone = creator.cloneNode();
-            clone.setAttribute('style', 'background-color: gray');
-            clone.classList.add('blacklisted');
+            //clone.setAttribute('style', 'background-color: gray');
+            clone.classList.add('ytbl-filler');
             commentHeader.insertBefore(clone, commentHeader.firstChild);
 
             // Hide the original span
-            creator.setAttribute('style', 'display: none');
+            creator.classList.add('ytbl-hide');  // Hiding
 
             // Hide the <a> in the <span> clone
             var username = commentHeader.querySelector('a.comment-author-text');
 
             // Add <span> to replace the inner <a> element in the clone
             var span = document.createElement('span');
-            span.classList.add('comment-author-text');
-            span.setAttribute('style', 'color: white');
+            //span.setAttribute('style', 'color: white');
             span.textContent = 'Blacklisted user';
+            span.classList.add('comment-author-text');
+            span.classList.add('ytbl-filler');
             clone.insertBefore(span, clone.firstChild);
         }
     }
@@ -96,18 +97,18 @@ function HideCommentHeader(comment) {
     // Verified badge
     var verified = commentHeader.querySelector('span.comment-author-verified-badge');
     if (verified) {
-        verified.setAttribute('style', 'display: none');
+        verified.classList.add('ytbl-hide');  // Hiding
     }
 
     // Time
     var commentTime = commentHeader.querySelector('span.comment-renderer-time');
     if (commentTime) {
         var a = commentTime.querySelector('a');
-        a.setAttribute('style', 'display: none');
+        a.classList.add('ytbl-hide');  // Hiding
         var span = document.createElement('span');
-        span.classList.add('blacklisted');
-        span.setAttribute('style', 'color: gray');
+        //span.setAttribute('style', 'color: gray');
         span.textContent = a.textContent;
+        span.classList.add('ytbl-filler');
         commentTime.insertBefore(span, commentTime.firstChild);
     }
 }
@@ -117,12 +118,12 @@ function HideCommentImage(comment) {
     if (img) {
         var parent = img.parentNode;
         var clone = img.cloneNode();
-        img.setAttribute('style', 'display: none');
+        img.classList.add('ytbl-hide');  // Hiding
         var path = chrome.runtime.getURL('images/hidden.png');
         clone.setAttribute('src', path);
         clone.setAttribute('alt', 'Blacklisted user');
-        clone.setAttribute('style', 'background-color: white');
-        clone.classList.add('blacklisted');
+        //clone.setAttribute('style', 'background-color: white');
+        clone.classList.add('ytbl-filler');
         parent.insertBefore(clone, parent.firstChild);
     }
 }
@@ -132,30 +133,47 @@ function HideCommentText(comment) {
     if (commentText) {
         var parent = commentText.parentNode;
         var clone = commentText.cloneNode();
-        commentText.setAttribute('style', 'display: none');
-        clone.classList.add('blacklisted');
-        clone.setAttribute('style', 'color: gray; font-style: italic');
+        commentText.classList.add('ytbl-hide');  // Hiding
+        //clone.setAttribute('style', 'color: gray; font-style: italic');
         clone.innerHTML = 'This comment was removed because the user is blacklisted.&#65279;';
+        clone.classList.add('ytbl-filler');
         parent.insertBefore(clone, parent.firstChild);
-        // Show text toggle button
+        // Show text button
         var div = document.createElement('div');
         div.setAttribute('style', 'margin-top: -8px');
+        div.classList.add('ytbl-filler');
         clone.parentNode.insertBefore(div, clone.nextSibling);
         var button = document.createElement('button');
         button.classList.add('yt-uix-button-link');
         button.textContent = 'Show';
         div.appendChild(button);
+        div.addEventListener('click', function () {
+            showComment(comment);
+        });
     }
     var readMore = comment.querySelector('div.comment-text-toggle');
     if (readMore) {
-        readMore.setAttribute('style', 'display: none');
+        readMore.classList.add('ytbl-hide');  // Hiding
     }
 }
 
 function HideCommentFooter(comment) {
     var actionButtons = comment.querySelector('div.comment-action-buttons-toolbar');
     if (actionButtons) {
-        actionButtons.setAttribute('style', 'display: none');
+        actionButtons.classList.add('ytbl-hide');  // Hiding
+    }
+}
+
+// Show a hidden comment using the Show button
+function showComment(comment) {
+    var hidden = comment.querySelectorAll('.ytbl-hide');
+    for (var i = 0; i < hidden.length; i++) {
+        hidden[i].classList.remove('ytbl-hide');
+        hidden[i].classList.add('ytbl-show');
+    }
+    var filler = comment.querySelectorAll('.ytbl-filler');
+    for (var j = 0; j < filler.length; j++) {
+        filler[j].remove();
     }
 }
 
@@ -179,7 +197,8 @@ function filterComments(users) {
                             break;
                         }
                     }
-                    if (element.querySelectorAll('.blacklisted').length == 0) {
+                    // Prevent attempting to hide already hidden comments
+                    if (element.querySelectorAll('.ytbl-hide, .ytbl-show').length == 0) {
                         HideCommentHeader(element);
                         HideCommentImage(element);
                         HideCommentText(element);

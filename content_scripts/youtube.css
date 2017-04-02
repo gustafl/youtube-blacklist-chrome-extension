@@ -1,3 +1,37 @@
-.red {
-    background: #FDD;
+/*
+
+.ytbl-hide
+    Comments that are hidden by the comment replacement code.
+ .ytbl-filler
+    The replacement elements of hidden comments. Only used by JS.
+ .ytbl-show
+    Comments that have been explicitly shown and shouldn't be hidden again (new
+    calls to filterComments() will otherwise cause shown comments to become
+    hidden again). Only used by JS.
+
+*/
+
+.ytbl-hide {
+    display: none !important; 
+}
+
+span.comment-author-text.ytbl-filler {
+    color: #888;
+}
+
+span.creator.ytbl-filler {
+    background-color: #888 !important;
+}
+
+span.comment-renderer-time span.ytbl-filler {
+    color: #888 !important;
+}
+
+span.comment-author-thumbnail img.ytbl-filler {
+    background-color: #fff !important;
+}
+
+div.comment-renderer-text-content.ytbl-filler {
+    color: #888 !important;
+    font-style: italic !important;
 }
