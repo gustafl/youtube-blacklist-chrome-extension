@@ -102,3 +102,23 @@ chrome.webRequest.onCompleted.addListener(function (details) {
         });
     }
 }, filters, options);
+
+// chrome.runtime.onMessage
+
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+    if (!(request.message && request.message.name)) {
+        console.warn('Content script received a malformed message:');
+        console.log(request);
+    }
+    console.info('Content script received a message named ' + request.message.name + '.');
+    switch (request.message.name) {
+        case 'enable':
+            chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+                chrome.pageAction.show(tabs[0].id);
+            });
+            break;
+        default:
+            console.warn('Unknown message: ' + request.message.name);
+            break;
+    }
+});

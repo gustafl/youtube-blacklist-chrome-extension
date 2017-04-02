@@ -2,9 +2,25 @@
     box-sizing: border-box;
 }
 
-#container {
-    overflow: hidden;
+body {
     width: 300px;
+}
+
+header, main, footer {
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+header {
+    background-color: #FDD;
+}
+
+main {
+    background-color: #DFD;
+}
+
+footer {
+    background-color: #DDF;
 }
 
 h1 {

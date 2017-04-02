@@ -206,6 +206,9 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     }
 });
 
+var message =  { name: 'enable' };
+chrome.runtime.sendMessage({ message: message });
+
 // Context menu
 
 var userId = null;
