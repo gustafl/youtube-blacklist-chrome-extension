@@ -5,7 +5,6 @@
 body {
     width: 260px;
     font-family: "Roboto", sans-serif;
-    letter-spacing: 0.01em;
     color: #333;
 }
 
@@ -13,6 +12,10 @@ header, main, footer {
     margin: 0 auto;
     overflow: hidden;
     text-align: center;
+}
+
+.logo img {
+    width: 75px;
 }
 
 h1 {
@@ -26,20 +29,17 @@ ul {
     padding: 0;
 }
 
-.blacklisted-details ul,
-.whitelisted-details ul {
+.blacklisted-details ul {
     margin: 10px;
 }
 
-.blacklisted-details li,
-.whitelisted-details li {
+.blacklisted-details li {
     list-style-type: none;
     display: inline-block;
     margin: 0;
 }
 
-.blacklisted,
-.whitelisted {
+.blacklisted {
     margin-top: 5px;
     font-size: 14px;
 }
@@ -83,4 +83,36 @@ hr {
 
 .links div {
     flex-basis: 50%;
+}
+
+.cloud-opt-in {
+    font-size: 13px;
+    margin: 10px 20px;
+    font-style: italic;
+    color: #666;
+    line-height: 1.5em;
+}
+
+.cloud-opt-in a {
+    font-style: normal;
+    font-weight: bold;
+    color: #666;
+    text-decoration: none;
+}
+
+.cloud-opt-in a:hover {
+    color: #167ac6;
+    text-decoration: underline;
+}
+
+olor: #167ac6;
+
+input[type='checkbox'] {
+    width: 13px;
+    height: 13px;
+    padding: 0;
+    margin: 0;
+    vertical-align: bottom;
+    position: relative;
+    top: -3px;
 }
