@@ -210,6 +210,14 @@ function filterComments(users) {
     }
 }
 
+function getExtensionUserId() {
+    var a = document.querySelector('[data-name="g-personal"][data-ytid]');
+    if (a) {
+        var userId = a.getAttribute('data-ytid');
+        return userId;
+    }
+}
+
 // chrome.runtime.onMessage
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
