@@ -91,9 +91,14 @@ function HideCommentHeader(comment) {
             span.textContent = 'Blacklisted user';
             clone.insertBefore(span, clone.firstChild);
         }
-        
-        
     }
+
+    // Verified badge
+    var verified = commentHeader.querySelector('span.comment-author-verified-badge');
+    if (verified) {
+        verified.setAttribute('style', 'display: none');
+    }
+
     // Time
     var commentTime = commentHeader.querySelector('span.comment-renderer-time');
     if (commentTime) {
