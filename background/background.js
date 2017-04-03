@@ -1,3 +1,5 @@
+'use strict';
+
 var MP_WATCH_PAGE = '*://www.youtube.com/watch?v=*';
 
 function getUsers(tab) {
