@@ -63,6 +63,7 @@ button {
     font-size: 14px;
     font-weight: bold;
     color: #333;
+    outline: none;
 }
 
 .hidden {
@@ -104,8 +105,6 @@ hr {
     color: #167ac6;
     text-decoration: underline;
 }
-
-olor: #167ac6;
 
 input[type='checkbox'] {
     width: 13px;

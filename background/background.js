@@ -2,14 +2,38 @@
 
 var MP_WATCH_PAGE = '*://www.youtube.com/watch?v=*';
 
+chrome.runtime.onInstalled.addListener(function (details) {
+    chrome.storage.sync.set({ 'config.extensionIsEnabled': true });
+});
+
 function getUsers(tab) {
+    if (!(tab && tab.id)) {
+        console.warn('getUsers() got an invalid argument.');
+        console.log(tab);
+        return;
+    }
     var message = { name: 'getUsers' };
     chrome.tabs.sendMessage(tab.id, { message: message }, function (response) {
         if (response && response.message && response.message.data.length > 0) {
             var users = response.message.data;
-            var text = 'Users loaded now: ' + users.length;
-            console.info(text);
-            filterComments(tab, users);
+            console.info('Users loaded now: ' + users.length);
+            // Filter comments if extension is enabled
+            var key = 'config.extensionIsEnabled';
+            chrome.storage.sync.get(key, function (items) {
+                if (items[key]) {
+                    filterComments(tab, users);
+                }
+            });
+        }
+    });
+}
+
+function getExtensionUser(tab) {
+    var message = { name: 'getExtensionUser' };
+    chrome.tabs.sendMessage(tab.id, { message: message }, function (response) {
+        if (response && response.message && response.message.data) {
+            extensionUser = response.message.data;
+            console.info('Extension user: ' + extensionUser);
         }
     });
 }
@@ -19,7 +43,7 @@ function filterComments(tab, users) {
         // Make a list of blacklisted users on the current page
         var blacklisted = [];
         for (var key in items) {
-            if (items.hasOwnProperty(key) && items[key] === 'B') {
+            if (items.hasOwnProperty(key)) {
                 if (users.indexOf(key) > -1) {
                     blacklisted.push(key);
                 }
@@ -37,21 +61,35 @@ function filterComments(tab, users) {
 // chrome.contextMenus.onClicked
 
 chrome.contextMenus.onClicked.addListener(function (info, tab) {
-    var message = { name: 'getUserId' };
+    var message = { name: 'getContextData' };
     chrome.tabs.sendMessage(tab.id, { message: message }, function (response) {
         if (response && response.message) {
             if (response.message.data) {
                 // If we got a user ID
-                var userId = response.message.data;
-                console.log('User ID found: ' + userId);
+                var contextData = response.message.data;
+                console.log('User ID found: ' + contextData.userId);
                 // Save user record to Chrome's local storage 
                 var record = {};
-                record[userId] = 'B';
+                var object = {};
+                object.action = 'B';
+                object.author = contextData.userName;
+                object.reason = null;
+                object.video = /youtube.com\/watch\?v=(.+)/.exec(tab.url)[1];
+                object.comment = contextData.comment;
+                object.user = extensionUser;
+                object.time = Date.now();
+                record[contextData.userId] = object;
                 chrome.storage.local.set(record);
                 // Hide this user's comments
                 var users = [];
-                users.push(userId);
-                filterComments(tab, users);
+                users.push(contextData.userId);
+                // Filter comments if extension is enabled
+                var key = 'config.extensionIsEnabled';
+                chrome.storage.sync.get(key, function (items) {
+                    if (items[key]) {
+                        filterComments(tab, users);
+                    }
+                });
                 // Notify user of success
                 chrome.notifications.create('storage.success', {
                     type: 'basic',
@@ -87,6 +125,7 @@ chrome.contextMenus.create({
 var filters = {
     urls: [
         '*://*.youtube.com/watch_fragments_ajax?*&frags=comments*',
+        '*://*.youtube.com/watch_fragments_ajax?*&frags=guide*',
         '*://*.youtube.com/comment_service_ajax?action_get_comments=*',
         '*://*.youtube.com/comment_service_ajax?action_get_comment_replies=*'
     ],
@@ -96,11 +135,15 @@ var filters = {
 };
 
 var options = [];
+var extensionUser = null;
 
 chrome.webRequest.onCompleted.addListener(function (details) {
     if (details.tabId > -1) {
         chrome.tabs.get(details.tabId, function (tab) {
             getUsers(tab);
+            if (!extensionUser) {
+                extensionUser = getExtensionUser(tab);
+            }
         });
     }
 }, filters, options);
@@ -109,12 +152,12 @@ chrome.webRequest.onCompleted.addListener(function (details) {
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     if (!(request.message && request.message.name)) {
-        console.warn('Content script received a malformed message:');
+        console.warn('Background script received a malformed message:');
         console.log(request);
     }
-    console.info('Content script received a message named ' + request.message.name + '.');
+    console.info('Background script received a message named ' + request.message.name + '.');
     switch (request.message.name) {
-        case 'enable':
+        case 'pageActionShow':
             chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
                 chrome.pageAction.show(tabs[0].id);
             });

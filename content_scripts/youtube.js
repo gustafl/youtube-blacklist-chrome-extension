@@ -210,7 +210,7 @@ function filterComments(users) {
     }
 }
 
-function getExtensionUserId() {
+function getExtensionUser() {
     var a = document.querySelector('[data-name="g-personal"][data-ytid]');
     if (a) {
         var userId = a.getAttribute('data-ytid');
@@ -227,19 +227,24 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     }
     console.info('Content script received a message named ' + request.message.name + '.');
     switch (request.message.name) {
-        case 'getUsers':
-            var users = getUsers();
-            var message = { name: 'getUsers', data: users };
-            sendResponse({ message: message });
-            break;
         case 'filterComments':
             var users = request.message.data;
             filterComments(users);
             break;
-        case 'getUserId':
-            var message = { name: 'getUserId', data: userId };
+        case 'getExtensionUser':
+            var userId = getExtensionUser();
+            var message = { name: 'getExtensionUser', data: userId };
             sendResponse({ message: message });
-            userId = null;
+            break;
+        case 'getContextData':
+            var message = { name: 'getContextData', data: contextData };
+            sendResponse({ message: message });
+            contextData = {};
+            break;
+        case 'getUsers':
+            var users = getUsers();
+            var message = { name: 'getUsers', data: users };
+            sendResponse({ message: message });
             break;
         default:
             console.warn('Unknown message: ' + request.message.name);
@@ -247,19 +252,21 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     }
 });
 
-var message =  { name: 'enable' };
+var message =  { name: 'pageActionShow' };
 chrome.runtime.sendMessage({ message: message });
 
 // Context menu
 
-var userId = null;
+var contextData = {};
 
 document.addEventListener('contextmenu', function (event) {
-    var commentElement = clickInsideElement(event);
-    if (commentElement) {
-        var link = commentElement.querySelector('a[data-ytid]');
+    var comment = clickInsideElement(event);
+    if (comment) {
+        var link = comment.querySelector('a.comment-author-text');
         if (link) {
-            userId = link.getAttribute('data-ytid');
+            contextData.userId = link.getAttribute('data-ytid');
+            contextData.userName = link.textContent;
+            contextData.comment = comment.getAttribute('data-cid');
         }
     }
 });

@@ -3,7 +3,7 @@
 
 	"name": "Blacklist for YouTube",
 	"description": "Blacklist dumb people on YouTube.",
-	"version": "0.3.0",
+	"version": "0.3.1",
 
 	"page_action": {
 		"default_icon": "images/hidden.png",

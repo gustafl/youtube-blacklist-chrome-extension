@@ -1,8 +1,14 @@
 'use strict';
 
-console.log('Hello from popup!');
-
 var button = document.querySelector('button.disable');
+
+chrome.storage.sync.get('extensionIsEnabled', function (items) {
+    button.textContent = (items.extensionIsEnabled) ? 'Disable' : 'Enable';
+});
+
+button.addEventListener('click', function () {
+    button.textContent = (button.textContent === 'Disable') ? 'Enable' : 'Disable';
+});
 
 var blacklisted = document.querySelector('.blacklisted');
 var blacklistedDetails = document.querySelector('.blacklisted-details');
@@ -14,14 +20,15 @@ blacklisted.addEventListener('click', function () {
     }
 });
 
-
-var whitelisted = document.querySelector('.whitelisted');
-var whitelistedDetails = document.querySelector('.whitelisted-details');
-whitelisted.addEventListener('click', function () {
-    if (whitelistedDetails.classList.contains('hidden')) {
-        whitelistedDetails.classList.remove('hidden');
-    } else {
-        whitelistedDetails.classList.add('hidden');
+document.addEventListener('DOMContentLoaded', function () {
+    var links = document.getElementsByTagName('a');
+    for (var i = 0; i < links.length; i++) {
+        (function () {
+            var a = links[i];
+            var href = a.href;
+            a.onclick = function () {
+                chrome.tabs.create({ active: true, url: href });
+            };
+        })();
     }
 });
-
