@@ -2,12 +2,18 @@
 
 var button = document.querySelector('button.disable');
 
-chrome.storage.sync.get('extensionIsEnabled', function (items) {
-    button.textContent = (items.extensionIsEnabled) ? 'Disable' : 'Enable';
+chrome.storage.sync.get('config.extensionIsEnabled', function (items) {
+    button.textContent = (items['config.extensionIsEnabled']) ? 'Disable' : 'Enable';
 });
 
 button.addEventListener('click', function () {
-    button.textContent = (button.textContent === 'Disable') ? 'Enable' : 'Disable';
+    if (button.textContent === 'Disable') {
+        button.textContent = 'Enable';
+        chrome.storage.sync.set({ 'config.extensionIsEnabled': false });
+    } else {
+        button.textContent = 'Disable';
+        chrome.storage.sync.set({ 'config.extensionIsEnabled': true });
+    }
 });
 
 var blacklisted = document.querySelector('.blacklisted');
