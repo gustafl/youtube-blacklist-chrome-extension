@@ -73,7 +73,7 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
                 var object = {};
                 object.action = 'B';
                 object.author = contextData.userName;
-                object.reason = null;
+                object.reason = info.menuItemId;
                 object.video = /youtube.com\/watch\?v=(.+)/.exec(tab.url)[1];
                 object.comment = contextData.comment;
                 object.user = extensionUser;
@@ -113,9 +113,76 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
 
 chrome.contextMenus.create({
     type: 'normal',
-    id: 'blacklistUser',
+    id: 'root',
     title: 'Blacklist user',
-    contexts: [ 'all' ],
+    documentUrlPatterns: [ MP_WATCH_PAGE ],
+    enabled: true
+});
+
+chrome.contextMenus.create({
+    type: 'normal',
+    id: 'default',
+    parentId: 'root',
+    title: 'Default',
+    documentUrlPatterns: [ MP_WATCH_PAGE ],
+    enabled: true
+});
+
+chrome.contextMenus.create({
+    type: 'separator',
+    parentId: 'root'
+});
+
+chrome.contextMenus.create({
+    type: 'normal',
+    id: 'irrelevant',
+    parentId: 'root',
+    title: 'Irrelevant',
+    documentUrlPatterns: [ MP_WATCH_PAGE ],
+    enabled: true
+});
+
+chrome.contextMenus.create({
+    type: 'normal',
+    id: 'inappropriate',
+    parentId: 'root',
+    title: 'Inappropriate',
+    documentUrlPatterns: [ MP_WATCH_PAGE ],
+    enabled: true
+});
+
+chrome.contextMenus.create({
+    type: 'normal',
+    id: 'hateful',
+    parentId: 'root',
+    title: 'Hateful',
+    documentUrlPatterns: [ MP_WATCH_PAGE ],
+    enabled: true
+});
+
+chrome.contextMenus.create({
+    type: 'normal',
+    id: 'insulting',
+    parentId: 'root',
+    title: 'Insulting',
+    documentUrlPatterns: [ MP_WATCH_PAGE ],
+    enabled: true
+});
+
+chrome.contextMenus.create({
+    type: 'normal',
+    id: 'misleading',
+    parentId: 'root',
+    title: 'Misleading',
+    documentUrlPatterns: [ MP_WATCH_PAGE ],
+    enabled: true
+});
+
+chrome.contextMenus.create({
+    type: 'normal',
+    id: 'nonsensical',
+    parentId: 'root',
+    title: 'Nonsensical',
     documentUrlPatterns: [ MP_WATCH_PAGE ],
     enabled: true
 });
@@ -160,6 +227,16 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         case 'pageActionShow':
             chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
                 chrome.pageAction.show(tabs[0].id);
+            });
+            break;
+        case 'getUsers':
+            chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+                getUsers(tabs[0]);
+            });
+            break;
+        case 'getUsersInStorage':
+            chrome.storage.sync.get(key, function (items) {
+                sendResponse(items);
             });
             break;
         default:

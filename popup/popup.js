@@ -10,9 +10,13 @@ button.addEventListener('click', function () {
     if (button.textContent === 'Disable') {
         button.textContent = 'Enable';
         chrome.storage.sync.set({ 'config.extensionIsEnabled': false });
+        var message =  { name: 'getUsers' };
+        chrome.runtime.sendMessage({ message: message });
     } else {
         button.textContent = 'Disable';
         chrome.storage.sync.set({ 'config.extensionIsEnabled': true });
+        var message =  { name: 'getUsers' };
+        chrome.runtime.sendMessage({ message: message });
     }
 });
 
