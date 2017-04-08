@@ -17,6 +17,10 @@ chrome.storage.local.get(function (items) {
         }
     }
 
+    // Show the total number of users
+    var totalUsers = document.querySelector('.total-users');
+    totalUsers.textContent = array.length;
+
     // Sort the objects in the array on the 'author' property
     array.sort(function (a, b) {
         var aKey = Object.keys(a)[0];
