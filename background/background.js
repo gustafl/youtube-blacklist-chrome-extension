@@ -116,6 +116,7 @@ chrome.contextMenus.create({
     id: 'root',
     title: 'Blacklist user',
     documentUrlPatterns: [ MP_WATCH_PAGE ],
+    contexts: ['all'],
     enabled: true
 });
 
@@ -125,12 +126,14 @@ chrome.contextMenus.create({
     parentId: 'root',
     title: 'Default',
     documentUrlPatterns: [ MP_WATCH_PAGE ],
+    contexts: ['all'],
     enabled: true
 });
 
 chrome.contextMenus.create({
     type: 'separator',
-    parentId: 'root'
+    parentId: 'root',
+    contexts: ['all']
 });
 
 chrome.contextMenus.create({
@@ -139,6 +142,7 @@ chrome.contextMenus.create({
     parentId: 'root',
     title: 'Irrelevant',
     documentUrlPatterns: [ MP_WATCH_PAGE ],
+    contexts: ['all'],
     enabled: true
 });
 
@@ -148,6 +152,7 @@ chrome.contextMenus.create({
     parentId: 'root',
     title: 'Inappropriate',
     documentUrlPatterns: [ MP_WATCH_PAGE ],
+    contexts: ['all'],
     enabled: true
 });
 
@@ -157,6 +162,7 @@ chrome.contextMenus.create({
     parentId: 'root',
     title: 'Hateful',
     documentUrlPatterns: [ MP_WATCH_PAGE ],
+    contexts: ['all'],
     enabled: true
 });
 
@@ -166,6 +172,7 @@ chrome.contextMenus.create({
     parentId: 'root',
     title: 'Insulting',
     documentUrlPatterns: [ MP_WATCH_PAGE ],
+    contexts: ['all'],
     enabled: true
 });
 
@@ -175,6 +182,7 @@ chrome.contextMenus.create({
     parentId: 'root',
     title: 'Misleading',
     documentUrlPatterns: [ MP_WATCH_PAGE ],
+    contexts: ['all'],
     enabled: true
 });
 
@@ -184,6 +192,7 @@ chrome.contextMenus.create({
     parentId: 'root',
     title: 'Nonsensical',
     documentUrlPatterns: [ MP_WATCH_PAGE ],
+    contexts: ['all'],
     enabled: true
 });
 
