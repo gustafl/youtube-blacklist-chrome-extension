@@ -1,13 +1,14 @@
 {
 	"manifest_version": 2,
 
-	"name": "Blacklist for YouTube",
-	"description": "Blacklist dumb people on YouTube.",
-	"version": "0.3.3",
+	"name": "__MSG_manifest_name__",
+	"description": "__MSG_manifest_description__",
+	"version": "0.3.4",
+	"default_locale": "en",
 
 	"page_action": {
 		"default_icon": "images/hidden.png",
-		"default_title": "Blacklist for YouTube",
+		"default_title": "__MSG_manifest_name__",
 		"default_popup": "popup/popup.html"
 	},
 	
