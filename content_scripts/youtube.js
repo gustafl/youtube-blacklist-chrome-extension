@@ -1,3 +1,5 @@
+(function () {
+
 'use strict';
 
 var COMMENT_SECTION = '#comment-section-renderer-items';
@@ -66,15 +68,13 @@ function HideCommentHeader(comment) {
             var username = commentHeader.querySelector('a.comment-author-text');
             username.classList.add('ytbl-hide');  // Hiding
             var span = document.createElement('span');
-            //span.setAttribute('style', 'color: gray');
-            span.textContent = 'Blacklisted user';
+            span.textContent = chrome.i18n.getMessage('youtube_replacement_text_username');
             span.classList.add('comment-author-text');
             span.classList.add('ytbl-filler');
             commentHeader.insertBefore(span, commentHeader.firstChild);
         } else {
             // Clone <span> containing the <a>
             var clone = creator.cloneNode();
-            //clone.setAttribute('style', 'background-color: gray');
             clone.classList.add('ytbl-filler');
             commentHeader.insertBefore(clone, commentHeader.firstChild);
 
@@ -86,8 +86,7 @@ function HideCommentHeader(comment) {
 
             // Add <span> to replace the inner <a> element in the clone
             var span = document.createElement('span');
-            //span.setAttribute('style', 'color: white');
-            span.textContent = 'Blacklisted user';
+            span.textContent = chrome.i18n.getMessage('youtube_replacement_text_username');
             span.classList.add('comment-author-text');
             span.classList.add('ytbl-filler');
             clone.insertBefore(span, clone.firstChild);
@@ -106,7 +105,6 @@ function HideCommentHeader(comment) {
         var a = commentTime.querySelector('a');
         a.classList.add('ytbl-hide');  // Hiding
         var span = document.createElement('span');
-        //span.setAttribute('style', 'color: gray');
         span.textContent = a.textContent;
         span.classList.add('ytbl-filler');
         commentTime.insertBefore(span, commentTime.firstChild);
@@ -121,8 +119,7 @@ function HideCommentImage(comment) {
         img.classList.add('ytbl-hide');  // Hiding
         var path = chrome.runtime.getURL('images/hidden.png');
         clone.setAttribute('src', path);
-        clone.setAttribute('alt', 'Blacklisted user');
-        //clone.setAttribute('style', 'background-color: white');
+        clone.setAttribute('alt', chrome.i18n.getMessage('youtube_replacement_text_username'));
         clone.classList.add('ytbl-filler');
         parent.insertBefore(clone, parent.firstChild);
     }
@@ -134,8 +131,7 @@ function HideCommentText(comment) {
         var parent = commentText.parentNode;
         var clone = commentText.cloneNode();
         commentText.classList.add('ytbl-hide');  // Hiding
-        //clone.setAttribute('style', 'color: gray; font-style: italic');
-        clone.innerHTML = 'This comment was removed because the user is blacklisted.&#65279;';
+        clone.innerHTML = chrome.i18n.getMessage('youtube_replacement_text_comment');
         clone.classList.add('ytbl-filler');
         parent.insertBefore(clone, parent.firstChild);
         // Show text button
@@ -222,10 +218,10 @@ function getExtensionUser() {
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     if (!(request.message && request.message.name)) {
-        console.warn('Content script received a malformed message:');
+        console.warn('The content script received a malformed message:');
         console.log(request);
     }
-    console.info('Content script received a message named ' + request.message.name + '.');
+    console.info('The content script received a message named ' + request.message.name + '.');
     switch (request.message.name) {
         case 'filterComments':
             var users = request.message.data;
@@ -247,7 +243,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             sendResponse({ message: message });
             break;
         default:
-            console.warn('Unknown message: ' + request.message.name);
+            console.warn('Unknown message type: ' + request.message.name);
             break;
     }
 });
@@ -284,3 +280,5 @@ function clickInsideElement(event) {
     }
     return false;
 }
+
+})();

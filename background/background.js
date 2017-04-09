@@ -1,3 +1,5 @@
+(function () {
+
 'use strict';
 
 var MP_WATCH_PAGE = '*://www.youtube.com/watch?v=*';
@@ -16,7 +18,7 @@ function getUsers(tab) {
     chrome.tabs.sendMessage(tab.id, { message: message }, function (response) {
         if (response && response.message && response.message.data.length > 0) {
             var users = response.message.data;
-            console.info('Users loaded now: ' + users.length);
+            console.info('Users loaded: ' + users.length);
             // Filter comments if extension is enabled
             var key = 'config.extensionIsEnabled';
             chrome.storage.sync.get(key, function (items) {
@@ -67,7 +69,6 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
             if (response.message.data) {
                 // If we got a user ID
                 var contextData = response.message.data;
-                console.log('User ID found: ' + contextData.userId);
                 // Save user record to Chrome's local storage 
                 var record = {};
                 var object = {};
@@ -77,7 +78,7 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
                 object.video = /youtube.com\/watch\?v=(.+)/.exec(tab.url)[1];
                 object.comment = contextData.comment;
                 object.user = extensionUser;
-                object.time = Date.now();
+                object.time = Date.now();  // TODO: Consider converting this to an ISO date/time
                 record[contextData.userId] = object;
                 chrome.storage.local.set(record);
                 // Hide this user's comments
@@ -93,17 +94,17 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
                 // Notify user of success
                 chrome.notifications.create('storage.success', {
                     type: 'basic',
-                    title: 'Bye bye!',
-                    message: 'You won\'t see more from this clown.',
+                    title: chrome.i18n.getMessage('background_blacklist_success_notification_title'),
+                    message: chrome.i18n.getMessage('background_blacklist_success_notification_message'),
                     iconUrl: 'images/hidden.png'
                 });
             } else {
                 // If the user clicked something other than a comment
-                console.log('No user ID found.');
+                console.warn('No user ID found.');
                 chrome.notifications.create('storage.failure', {
                     type: 'basic',
-                    title: 'Huh?',
-                    message: 'That doesn\'t seem to be a comment.',
+                    title: chrome.i18n.getMessage('background_blacklist_failure_notification_title'),
+                    message: chrome.i18n.getMessage('background_blacklist_failure_notification_message'),
                     iconUrl: 'images/question.png'
                 });
             }
@@ -114,7 +115,7 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
 chrome.contextMenus.create({
     type: 'normal',
     id: 'root',
-    title: 'Blacklist user',
+    title: chrome.i18n.getMessage('background_context_menu_root'),
     documentUrlPatterns: [ MP_WATCH_PAGE ],
     contexts: ['all'],
     enabled: true
@@ -124,7 +125,7 @@ chrome.contextMenus.create({
     type: 'normal',
     id: 'default',
     parentId: 'root',
-    title: 'Default',
+    title: chrome.i18n.getMessage('background_context_menu_default'),
     documentUrlPatterns: [ MP_WATCH_PAGE ],
     contexts: ['all'],
     enabled: true
@@ -140,7 +141,7 @@ chrome.contextMenus.create({
     type: 'normal',
     id: 'irrelevant',
     parentId: 'root',
-    title: 'Irrelevant',
+    title: chrome.i18n.getMessage('background_context_menu_irrelevant'),
     documentUrlPatterns: [ MP_WATCH_PAGE ],
     contexts: ['all'],
     enabled: true
@@ -150,7 +151,7 @@ chrome.contextMenus.create({
     type: 'normal',
     id: 'inappropriate',
     parentId: 'root',
-    title: 'Inappropriate',
+    title: chrome.i18n.getMessage('background_context_menu_inappropriate'),
     documentUrlPatterns: [ MP_WATCH_PAGE ],
     contexts: ['all'],
     enabled: true
@@ -160,7 +161,7 @@ chrome.contextMenus.create({
     type: 'normal',
     id: 'hateful',
     parentId: 'root',
-    title: 'Hateful',
+    title: chrome.i18n.getMessage('background_context_menu_hateful'),
     documentUrlPatterns: [ MP_WATCH_PAGE ],
     contexts: ['all'],
     enabled: true
@@ -170,7 +171,7 @@ chrome.contextMenus.create({
     type: 'normal',
     id: 'insulting',
     parentId: 'root',
-    title: 'Insulting',
+    title: chrome.i18n.getMessage('background_context_menu_insulting'),
     documentUrlPatterns: [ MP_WATCH_PAGE ],
     contexts: ['all'],
     enabled: true
@@ -180,7 +181,7 @@ chrome.contextMenus.create({
     type: 'normal',
     id: 'misleading',
     parentId: 'root',
-    title: 'Misleading',
+    title: chrome.i18n.getMessage('background_context_menu_misleading'),
     documentUrlPatterns: [ MP_WATCH_PAGE ],
     contexts: ['all'],
     enabled: true
@@ -190,7 +191,7 @@ chrome.contextMenus.create({
     type: 'normal',
     id: 'nonsensical',
     parentId: 'root',
-    title: 'Nonsensical',
+    title: chrome.i18n.getMessage('background_context_menu_nonsensical'),
     documentUrlPatterns: [ MP_WATCH_PAGE ],
     contexts: ['all'],
     enabled: true
@@ -228,10 +229,10 @@ chrome.webRequest.onCompleted.addListener(function (details) {
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     if (!(request.message && request.message.name)) {
-        console.warn('Background script received a malformed message:');
+        console.warn('The background script received a malformed message:');
         console.log(request);
     }
-    console.info('Background script received a message named ' + request.message.name + '.');
+    console.info('The background script received a message named ' + request.message.name + '.');
     switch (request.message.name) {
         case 'pageActionShow':
             chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
@@ -249,7 +250,9 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             });
             break;
         default:
-            console.warn('Unknown message: ' + request.message.name);
+            console.warn('Unknown message type: ' + request.message.name);
             break;
     }
 });
+
+})();

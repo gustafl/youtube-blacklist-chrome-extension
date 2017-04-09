@@ -52,8 +52,8 @@ chrome.storage.local.get(function (items) {
         var img = document.createElement('img');
         td.appendChild(img);
         img.setAttribute('src', chrome.runtime.getURL('images/remove.png'));
-        img.setAttribute('alt', 'Remove');
-        img.setAttribute('title', 'Remove ' + value.author + ' from the blacklist.');
+        img.setAttribute('alt', chrome.i18n.getMessage('options_remove_user'));
+        img.setAttribute('title', chrome.i18n.getMessage('options_remove_user'));
         img.addEventListener('click', function (event) {
             var td2 = event.target.parentElement;
             var td1 = td2.previousSibling;

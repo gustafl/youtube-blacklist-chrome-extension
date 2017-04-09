@@ -6,5 +6,69 @@
     "manifest_description": {
         "message": "Blacklist dumb people on YouTube.",
         "description": ""
+    },
+    
+    "background_blacklist_success_notification_title": {
+        "message": "Bye bye!",
+        "description": ""
+    },
+    "background_blacklist_success_notification_message": {
+        "message": "You won't see more from this clown.",
+        "description": ""
+    },
+    "background_blacklist_failure_notification_title": {
+        "message": "Huh?",
+        "description": ""
+    },
+    "background_blacklist_failure_notification_message": {
+        "message": "That doesn't seem to be a comment.",
+        "description": ""
+    },
+    "background_context_menu_root": {
+        "message": "Blacklist user",
+        "description": ""
+    },
+    "background_context_menu_default": {
+        "message": "Default",
+        "description": ""
+    },
+    "background_context_menu_irrelevant": {
+        "message": "Irrelevant",
+        "description": ""
+    },
+    "background_context_menu_inappropriate": {
+        "message": "Inappropriate",
+        "description": ""
+    },
+    "background_context_menu_hateful": {
+        "message": "Hateful",
+        "description": ""
+    },
+    "background_context_menu_insulting": {
+        "message": "Insulting",
+        "description": ""
+    },
+    "background_context_menu_misleading": {
+        "message": "Misleading",
+        "description": ""
+    },
+    "background_context_menu_nonsensical": {
+        "message": "Nonsensical",
+        "description": ""
+    },
+
+    "youtube_replacement_text_username": {
+        "message": "Blacklisted user",
+        "description": ""
+    },
+    "youtube_replacement_text_comment": {
+        "message": "This comment was removed because the user is blacklisted.&#65279;",
+        "description": ""
+    },
+
+    "options_remove_user": {
+        "message": "Remove",
+        "description": ""
     }
+
 }
