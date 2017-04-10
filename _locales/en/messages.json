@@ -69,6 +69,70 @@
     "options_remove_user": {
         "message": "Remove",
         "description": ""
-    }
+    },
+    "options_title": {
+        "message": "Options",
+        "description": ""
+    },
+    "options_users_header": {
+        "message": "Users",
+        "description": ""
+    },
+    "options_comments_header": {
+        "message": "Comments",
+        "description": ""
+    },
+    "options_number_of_blacklisted_users": {
+        "message": "Number of blacklisted users",
+        "description": ""
+    },
+    "options_replace": {
+        "message": "Replace",
+        "description": ""
+    },
+    "options_hide": {
+        "message": "Hide",
+        "description": ""
+    },
+    "options_replace_hide_explanation": {
+        "message": "Replace means blacklisted comments are replaced by a placeholder and can be revealed on command. Hide means comments are completely hidden. Comments with nested comments are always replaced.",
+        "description": ""
+    },
 
+    "popup_blacklisted_users": {
+        "message": "blacklisted users",
+        "description": ""
+    },
+    "popup_blacklist_reason_irrelevant": {
+        "message": "Irrelevant",
+        "description": ""
+    },
+    "popup_blacklist_reason_inappropriate": {
+        "message": "Inappropriate",
+        "description": ""
+    },
+    "popup_blacklist_reason_hateful": {
+        "message": "Hateful",
+        "description": ""
+    },
+    "popup_blacklist_reason_insulting": {
+        "message": "Insulting",
+        "description": ""
+    },
+    "popup_blacklist_reason_misleading": {
+        "message": "Misleading",
+        "description": ""
+    },
+    "popup_blacklist_reason_nonsensical": {
+        "message": "Nonsensical",
+        "description": ""
+    },
+    "popup_web_store_title": {
+        "message": "Find this extension in the Chrome Web Store",
+        "description": ""
+    },
+    "popup_github_title": {
+        "message": "Find the source code for this extension on GitHub",
+        "description": ""
+    }
 }

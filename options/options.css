@@ -1,0 +1,53 @@
+.table-wrapper {
+    position: relative;
+}
+
+.table-scroll {
+    height: 150px;
+    overflow: auto;
+    border: 1px solid #ccc;
+}
+
+table {
+    width: 100%;
+}
+
+tbody tr:hover {
+    background-color: #eee;
+}
+
+.help {
+    font-style: italic;
+    color: #888;
+}
+
+.replace-or-hide {
+    display: flex;
+}
+.replace-or-hide > div:nth-child(1) {
+    flex-basis: 25%;
+}
+
+.replace-or-hide > div:nth-child(2) {
+    flex-basis: 75%;
+    font-style: italic;
+    color: #666;
+}
+
+td img {
+    height: 16px;
+    margin-top: 4px;
+}
+
+td:nth-child(2) {
+    text-align: center;
+}
+
+h2 {
+    font-size: 14px;
+    margin: 14px 0 12px 0;
+}
+
+span.total-users {
+    font-weight: bold;
+}

@@ -1,68 +1,11 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Options</title>
-        <style>
-
-.table-wrapper {
-    position: relative;
-}
-
-.table-scroll {
-    height: 150px;
-    overflow: auto;
-    border: 1px solid #ccc;
-}
-
-table {
-    width: 100%;
-}
-
-tbody tr:hover {
-    background-color: #eee;
-}
-
-.help {
-    font-style: italic;
-    color: #888;
-}
-
-.replace-or-hide {
-    display: flex;
-}
-.replace-or-hide > div:nth-child(1) {
-    flex-basis: 25%;
-}
-
-.replace-or-hide > div:nth-child(2) {
-    flex-basis: 75%;
-    font-style: italic;
-    color: #666;
-}
-
-td img {
-    height: 16px;
-    margin-top: 4px;
-}
-
-td:nth-child(2) {
-    text-align: center;
-}
-
-h2 {
-    font-size: 14px;
-    margin: 14px 0 12px 0;
-}
-
-span.total-users {
-    font-weight: bold;
-}
-
-        </style>
-        <script src="options.js"></script>
+        <title>__MSG_options_title__</title>
+        <link rel="stylesheet" href="options.css" />
     </head>
     <body>
-        <h2>Users</h2>
+        <h2>__MSG_options_users_header__</h2>
         <div class="table-wrapper">
             <div class="table-scroll">
                 <table>
@@ -74,22 +17,22 @@ span.total-users {
                 </table>
             </div>
         </div>
-        <p>Number of blacklisted users: <span class="total-users"></span></p>
-        <h2>Comments</h2>
+        <p>__MSG_options_number_of_blacklisted_users__: <span class="total-users"></span></p>
+        <h2>__MSG_options_comments_header__</h2>
         <div class="replace-or-hide">
             <div>
                 <div>
                     <input type="radio" name="replaceOrHide" id="replace" value="replace" checked />
-                    <label for="replace">Replace</label>
+                    <label for="replace">__MSG_options_replace__</label>
                 </div>
                 <div style="margin-top: 8px">
                     <input type="radio" name="replaceOrHide" id="hide" value="hide" />
-                    <label for="hide">Hide</label>
+                    <label for="hide">__MSG_options_hide__</label>
                 </div>
             </div>
-            <div style="flex-basis: fill">Replace means blacklisted comments are replaced by a placeholder and
-                can be revealed on command. Hide means comments are completely hidden. Comments with nested
-                comments are always replaced.</div>
+            <div style="flex-basis: fill">__MSG_options_replace_hide_explanation__</div>
         </div>
+        <script src="../_locales/localization.js"></script>
+        <script src="options.js"></script>
     </body>
 </html>
