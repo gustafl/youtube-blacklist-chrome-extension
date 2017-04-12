@@ -65,6 +65,33 @@
                 totalUsers.textContent -= 1;
             });
         }
+
+        // Handle replace/hide setting
+        var replaceOrHide = items['config.replaceOrHide'];
+        var replaceRadioButton = document.querySelector('#replace');
+        var hideRadioButton = document.querySelector('#hide');
+        // If there is a setting in storage
+        if (replaceOrHide) {
+            if (replaceOrHide === 'replace') {
+                replaceRadioButton.checked = true;
+            } else {
+                hideRadioButton.checked = true;
+            }
+        } else {
+            // If there is no setting, set default value
+            replaceRadioButton.checked = true;
+            chrome.storage.local.set({ 'config.replaceOrHide': 'replace' });
+        }
+
+        // Handle clicks on the replace/ride radio buttons
+        var replaceOrHideButtons = document.querySelectorAll('input[name="replaceOrHide"]');
+        replaceOrHideButtons.forEach(function (element) {
+            element.addEventListener('click', function (event) {
+                var input = event.target;
+                var value = input.getAttribute('value');
+                chrome.storage.local.set({ 'config.replaceOrHide': value });
+            });
+        });
     });
 
 })();
