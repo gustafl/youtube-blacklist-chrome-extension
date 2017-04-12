@@ -62,8 +62,9 @@
                 chrome.storage.local.remove(userId);
                 tr = td.parentElement;
                 tr.remove();
+                totalUsers.textContent -= 1;
             });
         }
     });
 
-});
+})();
