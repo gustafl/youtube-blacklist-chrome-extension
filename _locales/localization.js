@@ -1,5 +1,7 @@
 (function () {
 
+'use strict';
+
 var regex = /__MSG_(\w+)__/g;
 
 // Loop through all elements

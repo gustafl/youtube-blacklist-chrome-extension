@@ -9,15 +9,15 @@
             <div class="logo">
                 <img src="../images/hidden.png" alt="Logo" />
             </div>
-            <h1>__MSG_options_title__</h1>
+            <h1>__MSG_manifest_name__</h1>
             <hr />
         </header>
         <main>
             <div>
-                <button class="disable">Disable</button>
+                <button id="filtering-enabled" value="enabled">__MSG_popup_disable__</button>
             </div>
-            <div class="blacklisted"><a class="total">0</a> __MSG_popup_blacklisted_users__</div>
-            <div class="blacklisted-details hidden">
+            <div class="blacklisted"><span class="total">0</span> __MSG_popup_blacklisted_users__</div>
+            <div class="blacklisted-details">
                 <ul>
                     <li>
                         <div><img src="../images/blacklist_reason_01.png" alt="" title="__MSG_popup_blacklist_reason_irrelevant__"></div>
@@ -45,9 +45,11 @@
                     </li>
                 </ul>
             </div>
+            <!--
             <div class="cloud-opt-in">
                 <input type="checkbox"/> Send blacklistings to the cloud.<br /><a href="#">Privacy statement</a>
             </div>
+            -->
         </main>
         <footer>
             <hr />

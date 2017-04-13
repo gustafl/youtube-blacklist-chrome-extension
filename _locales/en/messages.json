@@ -134,5 +134,13 @@
     "popup_github_title": {
         "message": "Find the source code for this extension on GitHub",
         "description": ""
+    },
+    "popup_disable": {
+        "message": "Disabled",
+        "description": "Button text when extension is enabled."
+    },
+    "popup_enable": {
+        "message": "Enable",
+        "description": "Button text when extension is disabled."
     }
 }

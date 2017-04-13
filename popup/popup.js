@@ -2,34 +2,36 @@
 
 'use strict';
 
-var button = document.querySelector('button.disable');
+var button = document.querySelector('#filtering-enabled');
 
-chrome.storage.local.get('config.extensionIsEnabled', function (items) {
+// Get all items from storage
+chrome.storage.local.get(function (items) {
+    // Load the enable/disable setting
+    var extensionIsEnabled = items['config.extensionIsEnabled'];
+    if (extensionIsEnabled) {
+
+    }
     button.textContent = (items['config.extensionIsEnabled']) ? 'Disable' : 'Enable';
 });
 
 button.addEventListener('click', function () {
-    if (button.textContent === 'Disable') {
-        button.textContent = 'Enable';
+    if (button.value === 'enabled') {
+        button.value = 'disabled';
+        button.textContent = chrome.i18n.getMessage('popup_enable');
         chrome.storage.local.set({ 'config.extensionIsEnabled': false });
-        var message =  { name: 'getUsers' };
-        chrome.runtime.sendMessage({ message: message });
     } else {
-        button.textContent = 'Disable';
+        button.value = 'enabled';
+        button.textContent = chrome.i18n.getMessage('popup_disable');
         chrome.storage.local.set({ 'config.extensionIsEnabled': true });
-        var message =  { name: 'getUsers' };
-        chrome.runtime.sendMessage({ message: message });
     }
-});
-
-var blacklisted = document.querySelector('.blacklisted');
-var blacklistedDetails = document.querySelector('.blacklisted-details');
-blacklisted.addEventListener('click', function () {
-    if (blacklistedDetails.classList.contains('hidden')) {
-        blacklistedDetails.classList.remove('hidden');
-    } else {
-        blacklistedDetails.classList.add('hidden');
-    }
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        if (tabs.length > 0) {
+            var message = { name: 'getUsers', data: tabs[0] };
+            chrome.runtime.sendMessage({ message: message });
+        } else {
+            console.warn('No tab found.');
+        }
+    });
 });
 
 document.addEventListener('DOMContentLoaded', function () {

@@ -16,16 +16,20 @@ function getUsers(tab) {
         console.log(tab);
         return;
     }
-    var message = { name: 'getUsers' };
+    var message = { name: 'getUsersOnPage' };
     chrome.tabs.sendMessage(tab.id, { message: message }, function (response) {
         if (response && response.message && response.message.data.length > 0) {
             var users = response.message.data;
             console.info('Users loaded: ' + users.length);
             // Filter comments if extension is enabled
             var key = 'config.extensionIsEnabled';
-            chrome.storage.sync.get(key, function (items) {
-                if (items[key]) {
+            chrome.storage.local.get(key, function (items) {
+                var extensionIsEnabled = items[key];
+                if (extensionIsEnabled) {
                     filterComments(tab, users);
+                } else {
+                    var message = { name: 'showAllComments' };
+                    chrome.runtime.sendMessage({ message: message });
                 }
             });
         }
@@ -88,9 +92,12 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
                 users.push(contextData.userId);
                 // Filter comments if extension is enabled
                 var key = 'config.extensionIsEnabled';
-                chrome.storage.sync.get(key, function (items) {
+                chrome.storage.local.get(key, function (items) {
                     if (items[key]) {
                         filterComments(tab, users);
+                    } else {
+                        var message = { name: 'showAllComments' };
+                        chrome.runtime.sendMessage({ message: message });
                     }
                 });
                 // Notify user of success
@@ -242,12 +249,11 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             });
             break;
         case 'getUsers':
-            chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-                getUsers(tabs[0]);
-            });
+            var tab = request.message.data;
+            getUsers(tab);
             break;
         case 'getUsersInStorage':
-            chrome.storage.sync.get(key, function (items) {
+            chrome.storage.local.get(key, function (items) {
                 sendResponse(items);
             });
             break;

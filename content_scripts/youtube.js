@@ -21,7 +21,7 @@ var COMMENT_CLASS = 'comment-renderer';
  */
 
 // Returns a list of distinct users from the page. 
-function getUsers() {
+function getUsersOnPage() {
     
     // Prepare an array of data-ytid strings
     var users = [];
@@ -173,6 +173,18 @@ function showComment(comment) {
     }
 }
 
+// Show all hidden comments
+function showAllComments() {
+    var hidden = document.querySelectorAll('.ytbl-hide');
+    for (var i = 0; i < hidden.length; i++) {
+        hidden[i].classList.remove('ytbl-hide');
+    }
+    var filler = document.querySelectorAll('.ytbl-filler');
+    for (var j = 0; j < filler.length; j++) {
+        filler[j].remove();
+    }
+}
+
 // Hides the comments of users in the input array.
 function filterComments(users) {
     var commentSection = document.querySelector(COMMENT_SECTION);
@@ -227,6 +239,9 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             var users = request.message.data;
             filterComments(users);
             break;
+        case 'showAllComments':
+            showAllComments();
+            break;
         case 'getExtensionUser':
             var userId = getExtensionUser();
             var message = { name: 'getExtensionUser', data: userId };
@@ -237,9 +252,9 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             sendResponse({ message: message });
             contextData = {};
             break;
-        case 'getUsers':
-            var users = getUsers();
-            var message = { name: 'getUsers', data: users };
+        case 'getUsersOnPage':
+            var users = getUsersOnPage();
+            var message = { name: 'getUsersOnPage', data: users };
             sendResponse({ message: message });
             break;
         default:
