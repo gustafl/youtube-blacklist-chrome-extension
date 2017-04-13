@@ -16,7 +16,7 @@ function getUsers(tab) {
         console.log(tab);
         return;
     }
-    var message = { name: 'getUsersOnPage' };
+    var message = { name: 'cs.getUsers' };
     chrome.tabs.sendMessage(tab.id, { message: message }, function (response) {
         if (response && response.message && response.message.data.length > 0) {
             var users = response.message.data;
@@ -28,7 +28,7 @@ function getUsers(tab) {
                 if (extensionIsEnabled) {
                     filterComments(tab, users);
                 } else {
-                    var message = { name: 'showAllComments' };
+                    var message = { name: 'cs.disableFilter' };
                     chrome.runtime.sendMessage({ message: message });
                 }
             });
@@ -60,7 +60,7 @@ function filterComments(tab, users) {
         // If there are blacklisted users on the page...
         if (blacklisted.length > 0) {
             // ...send a filter message to the content script
-            var message = { name: 'filterComments', data: blacklisted };
+            var message = { name: 'cs.enableFilter', data: blacklisted };
             chrome.tabs.sendMessage(tab.id, { message: message });
         }
     });
@@ -245,17 +245,20 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     switch (request.message.name) {
         case 'pageActionShow':
             chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-                chrome.pageAction.show(tabs[0].id);
+                if (tabs.length > 0) {
+                    chrome.pageAction.show(tabs[0].id);
+                } else {
+                    console.warn('Failed to find the active tab.');
+                }
             });
             break;
         case 'getUsers':
             var tab = request.message.data;
             getUsers(tab);
             break;
-        case 'getUsersInStorage':
-            chrome.storage.local.get(key, function (items) {
-                sendResponse(items);
-            });
+        case 'bg.updateContextMenu':
+            var updateProperties = request.message.data;
+            chrome.contextMenus.update('root', updateProperties);
             break;
         default:
             console.warn('Unknown message type: ' + request.message.name);

@@ -21,7 +21,7 @@ var COMMENT_CLASS = 'comment-renderer';
  */
 
 // Returns a list of distinct users from the page. 
-function getUsersOnPage() {
+function getUsers() {
     
     // Prepare an array of data-ytid strings
     var users = [];
@@ -226,7 +226,8 @@ function getExtensionUser() {
     }
 }
 
-// chrome.runtime.onMessage
+// Cache of blacklisted users
+var cache = [];
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     if (!(request.message && request.message.name)) {
@@ -235,11 +236,16 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     }
     console.info('The content script received a message named ' + request.message.name + '.');
     switch (request.message.name) {
-        case 'filterComments':
-            var users = request.message.data;
-            filterComments(users);
+        case 'cs.enableFilter':
+            var blacklisted = request.message.data;
+            if (blacklisted && blacklisted.length > 0) {
+                filterComments(blacklisted);
+                cache = blacklisted;
+            } else {
+                filterComments(cache);
+            }
             break;
-        case 'showAllComments':
+        case 'cs.disableFilter':
             showAllComments();
             break;
         case 'getExtensionUser':
@@ -252,9 +258,9 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             sendResponse({ message: message });
             contextData = {};
             break;
-        case 'getUsersOnPage':
-            var users = getUsersOnPage();
-            var message = { name: 'getUsersOnPage', data: users };
+        case 'cs.getUsers':
+            var users = getUsers();
+            var message = { name: 'cs.getUsers', data: users };
             sendResponse({ message: message });
             break;
         default:
