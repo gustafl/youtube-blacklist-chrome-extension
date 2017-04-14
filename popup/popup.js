@@ -15,7 +15,42 @@ chrome.storage.local.get(function (items) {
         button.value = 'disabled';
         button.textContent = chrome.i18n.getMessage('popup_enable');
     }
+    
+    // Convert 'items' object to an array, because arrays can be filtered
+    var array = [];
+    for (var key in items) {
+        // Skip configuration items
+        if (key.indexOf('config.') < 0) {
+            var object = {};
+            object[key] = items[key];
+            array.push(object);
+        }
+    }
+
+    // Show the total number of users
+    var totalUsers = document.querySelector('span.total');
+    totalUsers.textContent = array.length;
+
+    // Show counts by reason
+    handleReason(array, 'irrelevant');
+    handleReason(array, 'inappropriate');
+    handleReason(array, 'hateful');
+    handleReason(array, 'insulting');
+    handleReason(array, 'misleading');
+    handleReason(array, 'nonsensical');
 });
+
+function handleReason(array, name) {
+    var items = array.filter(function (element, index, array) {
+        var key = Object.keys(element)[0];
+        var value = element[key];
+        if (value.reason === name) {
+            return true;
+        }
+    });
+    var count = document.querySelector('div.' + name);
+    count.textContent = items.length;
+}
 
 button.addEventListener('click', function () {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
