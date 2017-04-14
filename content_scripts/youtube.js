@@ -4,6 +4,7 @@
 
 var COMMENT_SECTION = '#comment-section-renderer-items';
 var COMMENT_CLASS = 'comment-renderer';
+var NESTED_COMMENT_CLASS = 'comment-replies-renderer';
 
 /**
  * Available functions in the chrome.* API
@@ -189,32 +190,50 @@ function showAllComments() {
 function filterComments(users) {
     var commentSection = document.querySelector(COMMENT_SECTION);
     if (commentSection) {
-        // Loop through blacklisted users
-        for (var i = 0; i < users.length; i++) {
-            var user = users[i];
-            // Find all comments by user
-            var query = 'a.comment-author-text[data-ytid="' + user + '"]';
-            var elementList = commentSection.querySelectorAll(query);
-            if (elementList.length > 0) {
-                // Loop through comments by user
-                for (var j = 0; j < elementList.length; j++) {
-                    var element = elementList[j];
-                    // Find the ancestor with the comment class (the full comment)
-                    while (element = element.parentNode) {
-                        if (element.classList && element.classList.contains(COMMENT_CLASS)) {
-                            break;
+        // Read replace/hide setting
+        chrome.storage.local.get(function (items) {
+            var replaceOrHide = items['config.replaceOrHide'];
+            // Loop through blacklisted users
+            for (var i = 0; i < users.length; i++) {
+                var user = users[i];
+                // Find all comments by user
+                var query = 'a.comment-author-text[data-ytid="' + user + '"]';
+                var elementList = commentSection.querySelectorAll(query);
+                if (elementList.length > 0) {
+                    // Loop through comments by user
+                    for (var j = 0; j < elementList.length; j++) {
+                        var element = elementList[j];
+                        // Find the element containing the full comment
+                        while (element = element.parentNode) {
+                            if (element.classList && element.classList.contains(COMMENT_CLASS)) {
+                                break;
+                            }
                         }
-                    }
-                    // Prevent attempting to hide already hidden comments
-                    if (element.querySelectorAll('.ytbl-hide, .ytbl-show').length == 0) {
-                        HideCommentHeader(element);
-                        HideCommentImage(element);
-                        HideCommentText(element);
-                        HideCommentFooter(element);
+                        var commentElement = element;
+                        // See if the comment is nested
+                        var isNested = false;
+                        while (element = element.parentNode) {
+                            if (element.classList && element.classList.contains(NESTED_COMMENT_CLASS)) {
+                                isNested = true;
+                                break;
+                            }
+                        }
+                        if (replaceOrHide === 'hide' && isNested) {
+                            commentElement.classList.add('ytbl-hide');
+                        } else {
+                            // If the comment is not already hidden or has been revealed
+                            if (commentElement.querySelectorAll('.ytbl-hide, .ytbl-show').length == 0) {
+                                // Hide the comment
+                                HideCommentHeader(commentElement);
+                                HideCommentImage(commentElement);
+                                HideCommentText(commentElement);
+                                HideCommentFooter(commentElement);
+                            }
+                        }
                     }
                 }
             }
-        }
+        });
     }
 }
 
