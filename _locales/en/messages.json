@@ -1,10 +1,10 @@
 {
     "manifest_name": {
-        "message": "Blacklist for YouTube",
+        "message": "Comment filter for YouTube",
         "description": ""
     },
     "manifest_description": {
-        "message": "Blacklist dumb people on YouTube.",
+        "message": "Filter YouTube comments by user.",
         "description": ""
     },
     
@@ -29,7 +29,7 @@
         "description": ""
     },
     "background_context_menu_default": {
-        "message": "Default",
+        "message": "No reason",
         "description": ""
     },
     "background_context_menu_irrelevant": {
