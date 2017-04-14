@@ -134,7 +134,7 @@ chrome.contextMenus.create({
     type: 'normal',
     id: 'default',
     parentId: 'root',
-    title: chrome.i18n.getMessage('background_context_menu_default'),
+    title: chrome.i18n.getMessage('blacklist_reason_default'),
     documentUrlPatterns: [ MP_WATCH_PAGE ],
     contexts: ['all'],
     enabled: true
@@ -150,7 +150,7 @@ chrome.contextMenus.create({
     type: 'normal',
     id: 'irrelevant',
     parentId: 'root',
-    title: chrome.i18n.getMessage('background_context_menu_irrelevant'),
+    title: chrome.i18n.getMessage('blacklist_reason_irrelevant'),
     documentUrlPatterns: [ MP_WATCH_PAGE ],
     contexts: ['all'],
     enabled: true
@@ -160,7 +160,7 @@ chrome.contextMenus.create({
     type: 'normal',
     id: 'inappropriate',
     parentId: 'root',
-    title: chrome.i18n.getMessage('background_context_menu_inappropriate'),
+    title: chrome.i18n.getMessage('blacklist_reason_inappropriate'),
     documentUrlPatterns: [ MP_WATCH_PAGE ],
     contexts: ['all'],
     enabled: true
@@ -170,7 +170,7 @@ chrome.contextMenus.create({
     type: 'normal',
     id: 'hateful',
     parentId: 'root',
-    title: chrome.i18n.getMessage('background_context_menu_hateful'),
+    title: chrome.i18n.getMessage('blacklist_reason_hateful'),
     documentUrlPatterns: [ MP_WATCH_PAGE ],
     contexts: ['all'],
     enabled: true
@@ -180,7 +180,7 @@ chrome.contextMenus.create({
     type: 'normal',
     id: 'insulting',
     parentId: 'root',
-    title: chrome.i18n.getMessage('background_context_menu_insulting'),
+    title: chrome.i18n.getMessage('blacklist_reason_insulting'),
     documentUrlPatterns: [ MP_WATCH_PAGE ],
     contexts: ['all'],
     enabled: true
@@ -190,7 +190,7 @@ chrome.contextMenus.create({
     type: 'normal',
     id: 'misleading',
     parentId: 'root',
-    title: chrome.i18n.getMessage('background_context_menu_misleading'),
+    title: chrome.i18n.getMessage('blacklist_reason_misleading'),
     documentUrlPatterns: [ MP_WATCH_PAGE ],
     contexts: ['all'],
     enabled: true
@@ -200,7 +200,7 @@ chrome.contextMenus.create({
     type: 'normal',
     id: 'nonsensical',
     parentId: 'root',
-    title: chrome.i18n.getMessage('background_context_menu_nonsensical'),
+    title: chrome.i18n.getMessage('blacklist_reason_nonsensical'),
     documentUrlPatterns: [ MP_WATCH_PAGE ],
     contexts: ['all'],
     enabled: true

@@ -32,30 +32,6 @@
         "message": "No reason",
         "description": ""
     },
-    "background_context_menu_irrelevant": {
-        "message": "Irrelevant",
-        "description": ""
-    },
-    "background_context_menu_inappropriate": {
-        "message": "Inappropriate",
-        "description": ""
-    },
-    "background_context_menu_hateful": {
-        "message": "Hateful",
-        "description": ""
-    },
-    "background_context_menu_insulting": {
-        "message": "Insulting",
-        "description": ""
-    },
-    "background_context_menu_misleading": {
-        "message": "Misleading",
-        "description": ""
-    },
-    "background_context_menu_nonsensical": {
-        "message": "Nonsensical",
-        "description": ""
-    },
 
     "youtube_replacement_text_username": {
         "message": "Blacklisted user",
@@ -103,30 +79,6 @@
         "message": "blacklisted users",
         "description": ""
     },
-    "popup_blacklist_reason_irrelevant": {
-        "message": "Irrelevant",
-        "description": ""
-    },
-    "popup_blacklist_reason_inappropriate": {
-        "message": "Inappropriate",
-        "description": ""
-    },
-    "popup_blacklist_reason_hateful": {
-        "message": "Hateful",
-        "description": ""
-    },
-    "popup_blacklist_reason_insulting": {
-        "message": "Insulting",
-        "description": ""
-    },
-    "popup_blacklist_reason_misleading": {
-        "message": "Misleading",
-        "description": ""
-    },
-    "popup_blacklist_reason_nonsensical": {
-        "message": "Nonsensical",
-        "description": ""
-    },
     "popup_web_store_title": {
         "message": "Find this extension in the Chrome Web Store",
         "description": ""
@@ -142,5 +94,34 @@
     "popup_enable": {
         "message": "Enable filter",
         "description": "Button text when extension is disabled."
+    },
+
+    "blacklist_reason_default": {
+        "message": "Default",
+        "description": ""
+    },
+    "blacklist_reason_irrelevant": {
+        "message": "Irrelevant",
+        "description": ""
+    },
+    "blacklist_reason_inappropriate": {
+        "message": "Inappropriate",
+        "description": ""
+    },
+    "blacklist_reason_hateful": {
+        "message": "Hateful",
+        "description": ""
+    },
+    "blacklist_reason_insulting": {
+        "message": "Insulting",
+        "description": ""
+    },
+    "blacklist_reason_misleading": {
+        "message": "Misleading",
+        "description": ""
+    },
+    "blacklist_reason_nonsensical": {
+        "message": "Nonsensical",
+        "description": ""
     }
 }

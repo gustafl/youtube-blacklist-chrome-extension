@@ -32,30 +32,6 @@
         "message": "Inget skäl",
         "description": ""
     },
-    "background_context_menu_irrelevant": {
-        "message": "Irrelevant",
-        "description": ""
-    },
-    "background_context_menu_inappropriate": {
-        "message": "Opassande",
-        "description": ""
-    },
-    "background_context_menu_hateful": {
-        "message": "Hatiskt",
-        "description": ""
-    },
-    "background_context_menu_insulting": {
-        "message": "Förolämpande",
-        "description": ""
-    },
-    "background_context_menu_misleading": {
-        "message": "Lögnaktigt",
-        "description": ""
-    },
-    "background_context_menu_nonsensical": {
-        "message": "Bara dumt",
-        "description": ""
-    },
 
     "youtube_replacement_text_username": {
         "message": "Svartlistad användare",
@@ -103,30 +79,6 @@
         "message": "svartlistade användare",
         "description": ""
     },
-    "popup_blacklist_reason_irrelevant": {
-        "message": "Irrelevant",
-        "description": ""
-    },
-    "popup_blacklist_reason_inappropriate": {
-        "message": "Opassande",
-        "description": ""
-    },
-    "popup_blacklist_reason_hateful": {
-        "message": "Hastiskt",
-        "description": ""
-    },
-    "popup_blacklist_reason_insulting": {
-        "message": "Förolämpande",
-        "description": ""
-    },
-    "popup_blacklist_reason_misleading": {
-        "message": "Lögnaktigt",
-        "description": ""
-    },
-    "popup_blacklist_reason_nonsensical": {
-        "message": "Bara dumt",
-        "description": ""
-    },
     "popup_web_store_title": {
         "message": "Visa det här tillägget i Chrome Web Store",
         "description": ""
@@ -142,5 +94,34 @@
     "popup_enable": {
         "message": "Aktivera filtret",
         "description": "Button text when extension is disabled."
+    },
+
+    "blacklist_reason_default": {
+        "message": "Standard",
+        "description": ""
+    },
+    "blacklist_reason_irrelevant": {
+        "message": "Irrelevant",
+        "description": ""
+    },
+    "blacklist_reason_inappropriate": {
+        "message": "Opassande",
+        "description": ""
+    },
+    "blacklist_reason_hateful": {
+        "message": "Hatiskt",
+        "description": ""
+    },
+    "blacklist_reason_insulting": {
+        "message": "Förolämpande",
+        "description": ""
+    },
+    "blacklist_reason_misleading": {
+        "message": "Vilseledande",
+        "description": ""
+    },
+    "blacklist_reason_nonsensical": {
+        "message": "Bara dumt",
+        "description": ""
     }
 }
