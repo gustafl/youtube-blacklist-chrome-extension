@@ -1,10 +1,146 @@
 {
     "manifest_name": {
-        "message": "Blacklist för YouTube",
+        "message": "Kommentarsfilter för YouTube",
         "description": ""
     },
     "manifest_description": {
-        "message": "Svartlista dumma människor på YouTube.",
+        "message": "Filtrera YouTube-kommentarer efter användare.",
         "description": ""
+    },
+    
+    "background_blacklist_success_notification_title": {
+        "message": "Hej då!",
+        "description": ""
+    },
+    "background_blacklist_success_notification_message": {
+        "message": "Sista gången vi ser något från den clownen...",
+        "description": ""
+    },
+    "background_blacklist_failure_notification_title": {
+        "message": "Vadå?",
+        "description": ""
+    },
+    "background_blacklist_failure_notification_message": {
+        "message": "Det där verkar inte vara en kommentar.",
+        "description": ""
+    },
+    "background_context_menu_root": {
+        "message": "Svartlista användare",
+        "description": ""
+    },
+    "background_context_menu_default": {
+        "message": "Inget skäl",
+        "description": ""
+    },
+    "background_context_menu_irrelevant": {
+        "message": "Irrelevant",
+        "description": ""
+    },
+    "background_context_menu_inappropriate": {
+        "message": "Opassande",
+        "description": ""
+    },
+    "background_context_menu_hateful": {
+        "message": "Hatiskt",
+        "description": ""
+    },
+    "background_context_menu_insulting": {
+        "message": "Förolämpande",
+        "description": ""
+    },
+    "background_context_menu_misleading": {
+        "message": "Lögnaktigt",
+        "description": ""
+    },
+    "background_context_menu_nonsensical": {
+        "message": "Bara dumt",
+        "description": ""
+    },
+
+    "youtube_replacement_text_username": {
+        "message": "Svartlistad användare",
+        "description": ""
+    },
+    "youtube_replacement_text_comment": {
+        "message": "Den här kommentaren togs bort för att användaren är svartlistad.&#65279;",
+        "description": ""
+    },
+
+    "options_remove_user": {
+        "message": "Ta bort",
+        "description": ""
+    },
+    "options_title": {
+        "message": "Inställningar",
+        "description": ""
+    },
+    "options_users_header": {
+        "message": "Användare",
+        "description": ""
+    },
+    "options_comments_header": {
+        "message": "Kommentarer",
+        "description": ""
+    },
+    "options_number_of_blacklisted_users": {
+        "message": "Antal svartlistade användare",
+        "description": ""
+    },
+    "options_replace": {
+        "message": "Ersätt",
+        "description": ""
+    },
+    "options_hide": {
+        "message": "Dölj",
+        "description": ""
+    },
+    "options_replace_hide_explanation": {
+        "message": "Ersätt betyder att kommentarer från svartlistade användare byts ut mot en platshållare och kan visas på kommando. Dölj betyder att kommentarerna döljs helt och hållet. Kommentarer på första nivån ersätts alltid.",
+        "description": ""
+    },
+
+    "popup_blacklisted_users": {
+        "message": "svartlistade användare",
+        "description": ""
+    },
+    "popup_blacklist_reason_irrelevant": {
+        "message": "Irrelevant",
+        "description": ""
+    },
+    "popup_blacklist_reason_inappropriate": {
+        "message": "Opassande",
+        "description": ""
+    },
+    "popup_blacklist_reason_hateful": {
+        "message": "Hastiskt",
+        "description": ""
+    },
+    "popup_blacklist_reason_insulting": {
+        "message": "Förolämpande",
+        "description": ""
+    },
+    "popup_blacklist_reason_misleading": {
+        "message": "Lögnaktigt",
+        "description": ""
+    },
+    "popup_blacklist_reason_nonsensical": {
+        "message": "Bara dumt",
+        "description": ""
+    },
+    "popup_web_store_title": {
+        "message": "Visa det här tillägget i Chrome Web Store",
+        "description": ""
+    },
+    "popup_github_title": {
+        "message": "Visa källkoden för det här tillägget på GitHub",
+        "description": ""
+    },
+    "popup_disable": {
+        "message": "Deaktivera filtret",
+        "description": "Button text when extension is enabled."
+    },
+    "popup_enable": {
+        "message": "Aktivera filtret",
+        "description": "Button text when extension is disabled."
     }
 }
